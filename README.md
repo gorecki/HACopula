@@ -4,6 +4,9 @@
 ## Description:
 The HACopula toolbox extends the copula modeling provided by MATLAB to modeling with hierarchical Archimedean copulas, which allows for non-elliptical distributions in arbitrary dimensions enabling for asymmetries in the tails. This includes their representation as MATLAB objects, evaluation, sampling, estimation and goodness-of-fit testing, as well as tools for their visual representation or computation of corresponding Kendall's tau and tail dependence coefficients.
 
+## Manual:
+Available as PDF, see MANUAL.pdf.
+
 ## Installation:
 It is enough to unpack the files to a selected folder and to add this folder with its subfolders to the MATLAB path. For the full functionality, the toolbox requires Statistics and Machine Learning Toolbox and Symbolic Math Toolbox.
 
