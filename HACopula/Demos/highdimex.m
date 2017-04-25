@@ -4,11 +4,28 @@
 % Copyright 2017 Jan Górecki
 
 HACModel = gethomomodel(11, 10, 'C', 0.1, 0.08);
-% plot(HACModel);
+plot(HACModel);
 
-rng('default'); rng(1); 
-tic; disp('Sampling...'); U = pobs(rnd(HACModel, 2000));toc
-tic; disp('Kendall''s matrix...'); K = corr(U,'type','kendall');toc
+if isoctave
+    disp('Loading data...'); 
+    load('Demos/highdimex_data.mat'); % load U generated in MATLAB
+    disp('Loaded.'); 
+else % MATLAB    
+    disp('Sampling...'); 
+    rng('default'); 
+    rng(1); % set the seed
+    tic;
+    U = pobs(rnd(HACModel, 2000)); % do sampling
+    toc
+end
+
+tic; disp('Kendall''s matrix...'); 
+if isoctave
+    K = kendall(U);
+else % MATLAB
+    K = corr(U, 'type', 'kendall');
+end
+toc
 
 tic; disp('Estimating (1)...');
 fit1Avg = HACopulafit(U, {'C'}, 'Reestimator', 'Ktauavg', 'KendallMatrix', K);

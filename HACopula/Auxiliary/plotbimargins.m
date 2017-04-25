@@ -42,7 +42,11 @@ if size(varargin, 1) >= 1
     noc = unique(Y);
     for k = 1:size(noc,1)
         indices = (strcmp(Y,noc(k)));
-        A = corr(data(indices,:), 'type', 'Kendall');
+        if isoctave
+            A = kendall(data(indices,:));
+        else % MATLAB
+            A = corr(data(indices,:), 'type', 'Kendall');
+        end
         for i = 1:d
             for j = 1:d
                 subplot(d,d,(i - 1)*d + j);
@@ -64,7 +68,11 @@ if size(varargin, 1) >= 1
     end
     %legend(noc{:});
 else
-    A = corr(data, 'type', 'Kendall');
+    if isoctave
+        A = kendall(data);
+    else % MATLAB
+        A = corr(data, 'type', 'Kendall');
+    end
     clf;
     ha = tightsubplot(d,d, 0.003);
     for i = 1:d
@@ -77,13 +85,22 @@ else
             elseif (i == j)
                 axis off;
                 rectangle('Position',[0,0,1,1])
-                text(0.5, 0.5, sprintf('%s%d%s','$U_{',i,'}$'), 'HorizontalAlignment', 'center', 'Interpreter','latex','FontSize', 11);
+                if isoctave
+                    text(0.5, 0.5, sprintf('%s%d%s','U',i,''), 'HorizontalAlignment', 'center', 'Interpreter','latex','FontSize', 11);
+                else % MATLAB
+                    text(0.5, 0.5, sprintf('%s%d%s','$U_{',i,'}$'), 'HorizontalAlignment', 'center', 'Interpreter','latex','FontSize', 11);
+                end
             else
                 axis off;
                 rectangle('Position',[0,0,1,1])
                 %text(0.5, 0.5, sprintf('%s%d%d%s%3.3f%s','$\tau^n_{',j,i,'}=',A(i,j),'$'), 'HorizontalAlignment', 'center', 'Interpreter','latex', 'FontSize', 8);
-                text(0.5, 0.7, sprintf('%s%d%d%s','$\tau^n_{',j,i,'}=$'), 'HorizontalAlignment', 'center', 'Interpreter','latex', 'FontSize', 11);
-                text(0.5, 0.3, sprintf('%s%3.3f%s','$',A(i,j),'$'), 'HorizontalAlignment', 'center', 'Interpreter','latex', 'FontSize', 11);
+                if isoctave
+                    text(0.5, 0.7, sprintf('%s%d%d%s','tau',j,i,'='), 'HorizontalAlignment', 'center', 'Interpreter','latex', 'FontSize', 11);
+                    text(0.5, 0.3, sprintf('%s%3.3f%s','',A(i,j),''), 'HorizontalAlignment', 'center', 'Interpreter','latex', 'FontSize', 11);
+                else % MATLAB
+                    text(0.5, 0.7, sprintf('%s%d%d%s','$\tau^n_{',j,i,'}=$'), 'HorizontalAlignment', 'center', 'Interpreter','latex', 'FontSize', 11);
+                    text(0.5, 0.3, sprintf('%s%3.3f%s','$',A(i,j),'$'), 'HorizontalAlignment', 'center', 'Interpreter','latex', 'FontSize', 11);
+                end
             end
         end
     end

@@ -57,23 +57,31 @@ elseif sum(sum(U == 0)) || sum(sum(U == 1))
     warning('iscopuladata: Some of the data is on the bound of the unit cube. Not all methods are stable or some functions give back non-finite results, if some input (Copula-)data is exactly 0 or 1.')
 end
 
-
-
-% check if the sample is close a copula distribution
-%
-% generate a sample with a perfect standard uniform distribution
-perfUniform = (0:1/(n-1):1)'; %e.g., [0 0.25 0.5 0.75 1] for n = 5
-
-hArray = zeros(1, d);
-pArray = zeros(1, d);
-for i = 1:d
-    % compare i-th margin with the sample with a perfect standard uniform distribution
-    % use two-sample Kolmogorov-Smirnov test
-    [hArray(i), pArray(i)] = kstest2(U(:,i), perfUniform, 'Alpha',alpha);
+if isoctave
+    warning(['iscopuladata (for Octave): the ''kstest2'' function used in iscopuladata' ...
+        ' to test marginal uniformity of the data belongs to the statistics package from Octave' ...
+        'Forge but has not yet been implemented (7.4.2017). Ommitting this test...']);
+    isCopulaData = 1;
+    hArray = zeros(1, d);
+    pArray = zeros(1, d);
+else % MATLAB
+    
+    % check if the sample is close a copula distribution
+    %
+    % generate a sample with a perfect standard uniform distribution
+    perfUniform = (0:1/(n-1):1)'; %e.g., [0 0.25 0.5 0.75 1] for n = 5
+    
+    hArray = zeros(1, d);
+    pArray = zeros(1, d);
+    for i = 1:d
+        % compare i-th margin with the sample with a perfect standard uniform distribution
+        % use two-sample Kolmogorov-Smirnov test
+        [hArray(i), pArray(i)] = kstest2(U(:,i), perfUniform, 'Alpha',alpha);
+    end
+    
+    % isCopulaData = 1 if there is no rejection for all margins
+    % isCopulaData = 0 otherwise
+    isCopulaData = (min(sum(hArray), 1) == 0);
+    
 end
-
-% isCopulaData = 1 if there is no rejection for all margins
-% isCopulaData = 0 otherwise
-isCopulaData = (min(sum(hArray), 1) == 0);
-        
 end

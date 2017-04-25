@@ -6,6 +6,9 @@ function out = getsymbgenerator(family, inversion)
 % Archimedean generator from the input family. If
 % inverted == 1, then the inverse (\psi^{-1}) of the function is returned,
 % otherwise, the original function \psi is returned.
+% 
+% NOTE:
+% In Octave, the OctSymPy package is needed (https://github.com/cbm755/octsympy).  
 %
 % References:
 % [Nelsen, 2006] Nelsen, R. (2006). An Introduction to Copulas. Springer,

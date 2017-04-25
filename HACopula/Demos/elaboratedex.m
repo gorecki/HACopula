@@ -12,16 +12,30 @@ HACModel = HACopula({LAM11, {LAM9, 2, 5, 6}, {LAM10, 1, {LAM8, 3, 4, 7}}})
 HACModel.Child{2}
 
 %% Sampling a HAC elaborated
-rng('default'); 
-rng(1); % set the seed
+if isoctave
+    load('Demos/quickex_data.mat'); 
+else % MATLAB    
+    % set the seed
+    rng('default'); 
+    rng(1);
+    % do sampling
+    UKnown = rnd(HACModel, 500); 
+end
 
-UKnown = rnd(HACModel, 500);
+% introduce some negative correlation by flipping three variables (columns)
 UKnown(:, [1 2 7]) = 1 - UKnown(:, [1 2 7]);
 plotbimargins(UKnown);
 
-KNeg = corr(UKnown, 'type', 'kendall');
-toFlip = findvars2flip(KNeg)
+if isoctave
+    KNeg = kendall(UKnown);
+else % MATLAB
+    KNeg = corr(UKnown, 'type', 'kendall');
+end
 
+% find variables that can reduce the negative correlation if they are
+% flipped
+toFlip = findvars2flip(KNeg)
+% flip the variables identified in the previous step
 UKnown(:, toFlip) = 1 - UKnown(:, toFlip);
 
 %% Estimating a HAC elaborated
@@ -37,24 +51,33 @@ families = getfamilies(HACModel);
                       'nForks', 'unknown', 'Attitude', 'optimistic', ...
                       'CheckData', 'on');
 
-%% collapsing
-% estimate binary structure
+%% Collapsing a binary structured HAC
+
+% fit a binary structured HAC assuming unknown ('?') families
 fit2Bin = HACopulafit(U, {'?'}, 'PreCollapse', false);
 plot(fit2Bin);
 
-% collapse it
-K = corr(U, 'type', 'kendall');
+if isoctave
+    K = kendall(U);
+else % MATLAB
+    K = corr(U,'type','kendall');
+end
+% collapse the binary structured HAC
 [colHACArray, minDistArray] = collapse(fit2Bin, 'invtau', ...
                                        K, U, @(t) mean(t), ...
                                        'optimistic', 'Ktauavg', false)
 
-% figure;
-% plot(minDistArray);
-% xlabel('i');
-% ylabel('minDistArray(i)');
+% show the minimal distances from the collapsing process
+figure;
+plot(minDistArray);
+xlabel('i');
+ylabel('minDistArray(i)');
 
+% find the first substantial jump
 iJump = findjump(minDistArray)
 
+% take the HAC corresponding to this jump
 fit2UnknownFams = colHACArray{iJump};
+% estimate the families and parameters assuming the structure of fit2UnknownFams
 fit2 = HACopulafit(U, families, 'PreCollapsedHAC', fit2UnknownFams);
 plot(fit2);

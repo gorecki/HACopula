@@ -10,6 +10,11 @@ function thetaMatrix = tau2theta(family, tauMatrix)
 % [0, 1] for some of the considered families, interpolation is done for the
 % cases where tau is close to the bounds of [0, 1] (see the code below for
 % details).
+% 
+% TODO:
+% In Octave, for the family F, does not work for tau > 0.9999, and for the
+% family 20, does not work for tau > 0.98. An approximation (in theta2tau)
+% is needed.
 %
 % References:
 % [Hofert, 2010] Hofert, M. (2010). Sampling Nested Archimedean Copulas
@@ -66,8 +71,12 @@ switch  family
             fce = @(t)(tau - theta2tau(family, t));
             if (tau > 0)
                 for i = 1:10
+                    try
                     theta = fzero(fce, exp(i), options);
                     if ~isnan(theta) break; end
+                    catch
+                        % do nothing
+                    end
                 end
             elseif (tau < 0)
                 for i = 1:10

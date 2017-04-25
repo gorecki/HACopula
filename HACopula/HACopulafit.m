@@ -531,16 +531,20 @@ end
 I = 1:d;
 
 % set Kendall matrix
-if exist('precomputedKendallMatrix', 'var')
+if exist('precomputedKendallMatrix', 'var')  % NOTE: the term eps(1) appears two times to match compatibility with Octave
     if ~(ismatrix(precomputedKendallMatrix) && size(precomputedKendallMatrix, 1) == d && ...
-        size(precomputedKendallMatrix, 2) == d && sum(diag(precomputedKendallMatrix) == ones(d, 1)) == d && ...
-        sum(sum( (precomputedKendallMatrix >= -1) .* (precomputedKendallMatrix <= 1) )) == d^2 )
+        size(precomputedKendallMatrix, 2) == d && sum(diag(precomputedKendallMatrix) - 1) <= d*eps(1) && ...
+        sum(sum( (precomputedKendallMatrix >= -1) .* (precomputedKendallMatrix <= (1+eps(1))  ) )) == d^2 )
             error('HACopulafit: the value corresponding to KendallMatrix is not a Kendall correlation matrix.');
     end
     K = precomputedKendallMatrix;
 else
     %compute the sample version of the Kendall correlation matrix
-    K = corr(U, 'type', 'kendall');
+    if isoctave
+        K = kendall(U);
+    else % MATLAB
+        K = corr(U, 'type', 'kendall');
+    end
 end
 
 % check for negative pairwise correlation
@@ -549,11 +553,13 @@ end
 if checkData
    MIN_AVERAGE_TAU = -0.1; 
    negK = K < 0; % identify negative coefficients in K
-   avgNegK = sum(sum(K(negK)))/sum(sum(negK));  % compute the average of the negative coefficients
-   if avgNegK < MIN_AVERAGE_TAU
-       warning(['HACopulafit: The average of the negative coefficient in the Kendall''s matrix is lower that ' ... 
-                num2str(MIN_AVERAGE_TAU) ' . Recall that HACs are not able to model negative pairwise correlation.' ... 
-                ' Try to flip (X := - X, using the function findvars2flip) some of the variables in order to reduce the negative pairwise correlation and possibly better fit of the estimate.']);
+   if sum(sum(negK)) > 0
+       avgNegK = sum(sum(K(negK)))/sum(sum(negK));  % compute the average of the negative coefficients
+       if avgNegK < MIN_AVERAGE_TAU
+           warning(['HACopulafit: The average of the negative coefficient in the Kendall''s matrix is lower that ' ...
+               num2str(MIN_AVERAGE_TAU) ' . Recall that HACs are not able to model negative pairwise correlation.' ...
+               ' Try to flip (X := - X, using the function findvars2flip) some of the variables in order to reduce the negative pairwise correlation and possibly better fit of the estimate.']);
+       end
    end
 end
             

@@ -151,7 +151,7 @@ switch familyNames
     case '1919'
         v01 = tiltedstablernd(exp(theta1), theta0/theta1, v0);          
     otherwise
-        error(['sample_v01: class ' familyNames ' combination not supported']);
+        error(['sample_v01: The class combination (' family0 ', ' family1 ') is not supported (as efficient sampling routines have not yet been developed).']);
 end
 
 end

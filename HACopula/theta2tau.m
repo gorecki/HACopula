@@ -49,7 +49,11 @@ switch family
         out = theta/(theta+2);
     case 'F'
         if theta >= 1e-4
-            out = 1 - 4*(1-integral(@integrandFrank, 0, theta)/theta)/theta;
+            if isoctave
+                out = 1 - 4*(1-quad(@integrandFrank, 0, theta)/theta)/theta;
+            else %MATLAB
+                out = 1 - 4*(1-integral(@integrandFrank, 0, theta)/theta)/theta;
+            end
         else
             out = theta*computeKendallTau(1e-4,'F')/1e-4;
         end
@@ -76,10 +80,15 @@ switch family
             out = min(1-eps(1), interp1(x, y, theta, 'linear', 'extrap'));
         elseif theta >= LOWER_BOUND_19
             RIGHT_BOUND = 100;
-            s = warning('off', 'MATLAB:integral:MinStepSize');  % switch of the warning
-            out = 1/3 + 2*theta*(1 - theta * exp(theta) * ...
-                integral(@(x)exp(-x)./x, min(theta,RIGHT_BOUND), RIGHT_BOUND))/3;
-            warning(s);
+            if isoctave
+                out = 1/3 + 2*theta*(1 - theta * exp(theta) * ...
+                    quad(@(x)exp(-x)./x, min(theta,RIGHT_BOUND), RIGHT_BOUND))/3;
+            else % MATLAB
+                s = warning('off', 'MATLAB:integral:MinStepSize');  % switch of the warning
+                out = 1/3 + 2*theta*(1 - theta * exp(theta) * ...
+                    integral(@(x)exp(-x)./x, min(theta,RIGHT_BOUND), RIGHT_BOUND))/3;
+                warning(s);
+            end
         else
             % linear interpolation
             out = (theta2tau('19', LOWER_BOUND_19) - 1/3) * theta / LOWER_BOUND_19 + 1/3;
@@ -89,7 +98,11 @@ switch family
         LOWER_BOUND_20 = 1.0e-8; % numerically unstable below this bound
         if theta >= LOWER_BOUND_20
             % standard computation
-            innerInteg = integral(@(t)((t.^(theta+1))./(exp(t.^(-theta)))), 0, 1);
+            if isoctave
+                innerInteg = quadcc(@(t)((t.^(theta+1))./(exp(t.^(-theta)))), 0, 1);
+            else % MATLAB
+                innerInteg = integral(@(t)((t.^(theta+1))./(exp(t.^(-theta)))), 0, 1);
+            end
             out = 1 - (4/theta) * (1/(theta+2) - exp(1) * innerInteg );
         else
             % linear interpolation
