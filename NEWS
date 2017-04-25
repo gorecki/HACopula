@@ -1,0 +1,16 @@
+HACopula R2017_04_24
+====================
+
+* Adjusted to get compatibility with Octave
+    
+    The Copyable class HACopula.m replaced by the directory @HACopula, and the class HACopula is now a class inherited from the class 'handle'.
+    
+* Added missing file sibuyarnd.m for sampling Frank's copulas.
+
+* Added an R script (Demos/highdimex.R) for comparing the HACopula estimators with an estimator from the R package HAC on a 100-variate HAC.
+
+
+HACopula R2017_04_03
+====================
+
+* The first version of the toolbox.
