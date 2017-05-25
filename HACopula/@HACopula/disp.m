@@ -3,9 +3,9 @@ function disp(obj)
 % In MATLAB, just uses the disp function provided by the superclass *handle*
 %
 %
-% Copyright 2017 Jan Górecki
+% Copyright 2017 Jan GÃ³recki
 
-if 1% isoctave
+if isoctave
     disp(['  HACopula with properties:' char(10)]);
     
     childStr = '{';
