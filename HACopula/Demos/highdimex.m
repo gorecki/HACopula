@@ -20,11 +20,7 @@ else % MATLAB
 end
 
 tic; disp('Kendall''s matrix...'); 
-if isoctave
-    K = kendall(U);
-else % MATLAB
-    K = corr(U, 'type', 'kendall');
-end
+K = kendallTauMatrix(U);
 toc
 
 tic; disp('Estimating (1)...');

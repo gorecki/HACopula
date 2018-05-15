@@ -42,11 +42,7 @@ if size(varargin, 1) >= 1
     noc = unique(Y);
     for k = 1:size(noc,1)
         indices = (strcmp(Y,noc(k)));
-        if isoctave
-            A = kendall(data(indices,:));
-        else % MATLAB
-            A = corr(data(indices,:), 'type', 'Kendall');
-        end
+        A = kendallTauMatrix(data(indices,:));
         for i = 1:d
             for j = 1:d
                 subplot(d,d,(i - 1)*d + j);
@@ -68,11 +64,7 @@ if size(varargin, 1) >= 1
     end
     %legend(noc{:});
 else
-    if isoctave
-        A = kendall(data);
-    else % MATLAB
-        A = corr(data, 'type', 'Kendall');
-    end
+    A = kendallTauMatrix(data);
     clf;
     ha = tightsubplot(d,d, 0.003);
     for i = 1:d

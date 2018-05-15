@@ -26,11 +26,7 @@ end
 UKnown(:, [1 2 7]) = 1 - UKnown(:, [1 2 7]);
 plotbimargins(UKnown);
 
-if isoctave
-    KNeg = kendall(UKnown);
-else % MATLAB
-    KNeg = corr(UKnown, 'type', 'kendall');
-end
+KNeg = kendallTauMatrix(UKnown);
 
 % find variables that can reduce the negative correlation if they are
 % flipped
@@ -57,11 +53,7 @@ families = getfamilies(HACModel);
 fit2Bin = HACopulafit(U, {'?'}, 'PreCollapse', false);
 plot(fit2Bin);
 
-if isoctave
-    K = kendall(U);
-else % MATLAB
-    K = corr(U,'type','kendall');
-end
+K = kendallTauMatrix(U);
 % collapse the binary structured HAC
 [colHACArray, minDistArray] = collapse(fit2Bin, 'invtau', ...
                                        K, U, @(t) mean(t), ...

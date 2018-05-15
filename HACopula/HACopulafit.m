@@ -79,7 +79,7 @@ function [HACObject, fitLog] = HACopulafit(U, families, varargin)
 %                     is first computed for all bivariate margins and then
 %                     aggregated with g_2.
 % KendallMatrix     - The Kendall correlation matrix of U. Use (could be
-%                     pre-computed by corr(U, 'type', 'kendall')), if more
+%                     pre-computed by kendallTauMatrix(U)), if more
 %                     estimation processes are done with the same U.
 % Emp2copulas       - The bivariate empirical copulas precomputed from U.
 %                     Use (could be pre-computed by computeallemp2copulas(U)),
@@ -540,11 +540,7 @@ if exist('precomputedKendallMatrix', 'var')  % NOTE: the term eps(1) appears two
     K = precomputedKendallMatrix;
 else
     %compute the sample version of the Kendall correlation matrix
-    if isoctave
-        K = kendall(U);
-    else % MATLAB
-        K = corr(U, 'type', 'kendall');
-    end
+    K = kendallTauMatrix(U);
 end
 
 % check for negative pairwise correlation
@@ -923,7 +919,7 @@ for k = 1:forksToEst
         end
         % extend K with taus for the new vector U_{d+k}
         for ii = 1:d-k-1  % length(I) without the last one
-            tau = corr(U(:,[I(ii) d+k]), 'type', 'kendall');
+            tau = kendallTauMatrix(U(:,[I(ii) d+k]));
             K(I(ii), d+k) = tau(1, 2);
             K(d+k, I(ii)) = tau(1, 2);
         end
