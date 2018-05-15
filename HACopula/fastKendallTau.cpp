@@ -1,5 +1,5 @@
-// Major parts of this code are taken from the file SDTau.cpp of the MIT licenced
-// project VineCopulaCPP: https://github.com/MalteKurz/VineCopulaCPP
+// Major parts of the code in this file are taken from the file SDTau.cpp 
+// of the MIT licenced project VineCopulaCPP: https://github.com/MalteKurz/VineCopulaCPP
 //
 // Copyright (c) 2014 Malte Kurz
 // 
