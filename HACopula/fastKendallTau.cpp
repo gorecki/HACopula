@@ -150,7 +150,7 @@ AVL_Node *Rotate_Left(AVL_Node *Node1)
 }
 
 // Insert a new node into the AVL tree
-AVL_Node* AVL_insert(AVL_Node* Node, double V, unsigned int *NumbBefore, unsigned int *NumbEqual)
+AVL_Node* AVL_insert(AVL_Node* Node, double V, unsigned int &NumbBefore, unsigned int &NumbEqual)
 {
     int Balance;
     
@@ -164,8 +164,8 @@ AVL_Node* AVL_insert(AVL_Node* Node, double V, unsigned int *NumbBefore, unsigne
     {
         Node->Count = Node->Count +1;
             
-        *NumbEqual =  Node->Count;
-        *NumbBefore = *NumbBefore + size(Node->Left);
+        NumbEqual =  Node->Count;
+        NumbBefore = NumbBefore + size(Node->Left);
     }
     else if (V < Node->Value)
     {
@@ -175,7 +175,7 @@ AVL_Node* AVL_insert(AVL_Node* Node, double V, unsigned int *NumbBefore, unsigne
     {
         Node->Right = AVL_insert(Node->Right,V,NumbBefore,NumbEqual);
         
-        *NumbBefore = *NumbBefore + size(Node->Left) + Node->Count;
+        NumbBefore = NumbBefore + size(Node->Left) + Node->Count;
     }
     
     Node->Height = 1 + max(height(Node->Left),height(Node->Right));
@@ -204,7 +204,7 @@ AVL_Node* AVL_insert(AVL_Node* Node, double V, unsigned int *NumbBefore, unsigne
     return Node;
 }
 
-void AVL_Tree (std::vector<std::pair<double, double> > UV, unsigned int *NumbBefore, unsigned int *NumbEqual, unsigned int n)
+void AVL_Tree (std::vector<std::pair<double, double> > UV, std::vector<unsigned int> &NumbBefore, std::vector<unsigned int> &NumbEqual, unsigned int n)
 {
     unsigned int i;
     AVL_Node *AVL_Root_Node = NULL;
@@ -213,7 +213,7 @@ void AVL_Tree (std::vector<std::pair<double, double> > UV, unsigned int *NumbBef
     {
         NumbBefore[i] = 0;
         NumbEqual[i] = 1;
-        AVL_Root_Node = AVL_insert(AVL_Root_Node,UV[i].second,&NumbBefore[i],&NumbEqual[i]);
+        AVL_Root_Node = AVL_insert(AVL_Root_Node,UV[i].second,NumbBefore[i],NumbEqual[i]);
         
     }
     
@@ -225,10 +225,8 @@ double SD_Kendall_Tau(double *U, double *V, unsigned int n)
 {
     double tau=0;
     
-    unsigned int i, *NumbBefore, *NumbEqual;
-    unsigned int NBefore[n-1], NEqual[n-1];
-    NumbBefore = &NBefore[0];
-    NumbEqual = &NEqual[0];
+    unsigned int i;
+    std::vector<unsigned int> NumbBefore(n-1), NumbEqual(n-1);
     std::vector<std::pair<double, double> > UV(n);
     
     SortUV(UV,U,V,n);
