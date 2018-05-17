@@ -84,11 +84,7 @@ computepvalue(fitC1219, U, estimator1, 100)
 toc
 
 % compute the Kendall correlation matrix
-if isoctave
-    K = kendall(U);
-else % MATLAB
-    K = corr(U,'type','kendall');
-end
+K = kendallTauMatrix(U);
 
 % compute a distance between a HAC estimate and K
 disp('kendall (HAC vs sample)');
