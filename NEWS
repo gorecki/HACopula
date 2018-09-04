@@ -1,3 +1,17 @@
+HACopula R2018_09_04
+====================
+
+* Extended optimization of several HACopula parts including fast Kendall's tau estimate computation (big thanks to Malte Kurz for sharing the implementation from the VineCopulaMatlab toolbox), distance matrices computation, youngest common ancestor computation (including their matrix).
+
+* Enhanced numerical stability for Archimedean copula density, conditional cumulative distribution and Kendall transformation formulas.
+
+* New functionality that computes how two HAC structure match to each other (see the method comparestructures).
+
+* Bivariate margins' density plot (plotbipdfs)
+
+* Easy access to an arbitrary bivariate margin of a HAC (getbimargin).
+
+
 HACopula R2017_04_24
 ====================
 
