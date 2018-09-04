@@ -7,7 +7,7 @@ HACopula R2018_09_04
 
 * New functionality that computes how two HAC structure match to each other (see the method comparestructures).
 
-* Bivariate margins' density plot (plotbipdfs)
+* Bivariate margins' density plot (plotbipdfs).
 
 * Easy access to an arbitrary bivariate margin of a HAC (getbimargin).
 
