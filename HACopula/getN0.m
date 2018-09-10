@@ -8,7 +8,7 @@ function N0 = getN0(families)
 % References:
 % [Gorecki et al., 2017] On Structure, Family and Parameter Estimation
 %     of Hierarchical Archimedean copulas. Journal of Statistical Computation 
-%     and Simulation, 87(17), 3261ÿ3324
+%     and Simulation, 87(17), 3261-3324
 % [Nelsen, 2006] Nelsen, R. (2006). An Introduction to Copulas. Springer,
 %    2nd edition.
 %
