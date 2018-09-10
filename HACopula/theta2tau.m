@@ -13,7 +13,7 @@ function tauMatrix = theta2tau(family, thetaMatrix)
 % References:
 % [Gorecki et al., 2017] On Structure, Family and Parameter Estimation
 %     of Hierarchical Archimedean copulas. Journal of Statistical Computation 
-%     and Simulation, 87(17), 3261ÿ3324
+%     and Simulation, 87(17), 3261-3324
 % [Hofert, 2010] Hofert, M. (2010). Sampling Nested Archimedean Copulas
 %     with Applications to CDO Pricing. Suedwestdeutscher Verlag fuer
 %     Hochschulschriften.
