@@ -32,7 +32,7 @@ function [collapsedHACArray, minDistanceArray] = collapse(obj, ...
 % g                      - A [0, 1]-aggregation function from
 %                          {'average', 'min', 'max'}.
 % attitude               - 'optimistic' or 'pessimistic'.
-% reEstimateType         - 'Ktauavg' - the [Górecki et al.,
+% reEstimateType         - 'Ktauavg' - the [Gorecki et al.,
 %                          2016b] approach,
 %                          or 'taumin' - the [Uyttendaele, et
 %                          al., 2016] approach.
@@ -79,16 +79,16 @@ function [collapsedHACArray, minDistanceArray] = collapse(obj, ...
 % of the HACopula input obj are needed.
 %
 %
-% Copyright 2017 Jan Górecki
+% Copyright 2018 Jan Gorecki
 
 if ~(strcmp(reEstimateType, 'Ktauavg') || strcmp(reEstimateType, 'taumin'))
-    error('HACopula::collapse: the parameter reEstimateType must be  either ''Ktauavg'' or ''taumin''.')
+    error('HACopula:collapse', 'HACopula::collapse: the parameter reEstimateType must be  either ''Ktauavg'' or ''taumin''.')
 end
 
 nForks = size(obj.Forks, 2);
 
 if nForks == 1
-    error('HACopula::collapse: Attempting to collapse HAC that is AC.')
+    error('HACopula:collapse', 'HACopula::collapse: Attempting to collapse HAC that is AC.')
 end
 
 collapsedHACArray = cell(1, nForks);
@@ -173,7 +173,7 @@ for k = 2:nForks
     
     % now, re-estimate the parameter of parentToJoin
     if strcmp(reEstimateType, 'Ktauavg')
-        % use the re-estimation proposed in [Górecki et al., 2016b]
+        % use the re-estimation proposed in [Gorecki et al., 2017]
         % store the descendant leaves
         nChildren = size(parentToJoin.Child, 2);
         descLeaves = cell(1, nChildren);
