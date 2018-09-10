@@ -8,7 +8,7 @@ function out = logrnd(alpha, n)
 % Reference:
 % Kemp, A. W. (1981), "Efficient Generation of Logarithmically Distributed Pseudo-Random
 % Variables", Journal of the Royal Statistical Society: Series C (Applied Statistics), 30(3),
-% 249ÿ253.
+% 249-253.
 %
 %
 % Copyright 2018 Jan Gorecki
