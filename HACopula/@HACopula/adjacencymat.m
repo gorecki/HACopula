@@ -20,7 +20,7 @@ function adjacencyMatrix = adjacencymat(obj)
 %      1     0     0     0     0     1     0
 %
 %
-% Copyright 2017 Jan Górecki and Martin Holeòa
+% Copyright 2018 Jan Gorecki and Martin Holena
 
 
 orderedNodes = obj.Forks;
