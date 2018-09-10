@@ -12,9 +12,9 @@ function addtauordering(obj)
 % NOTE: This function modifies the input obj.
 %
 %
-% Copyright 2017 Jan Górecki
+% Copyright 2018 Jan Gorecki
 
-d = getdimension(obj);
+d = obj.Dim;
 
 % get leaves of each of the forks and extend them
 nForks = size(obj.Forks,2);
