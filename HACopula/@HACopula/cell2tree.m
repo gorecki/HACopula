@@ -27,7 +27,7 @@ function cell2tree(obj, HACCellModel, varargin)
 % NOTE: This function modifies the input obj.
 %
 %
-% Copyright 2017 Jan Górecki
+% Copyright 2018 Jan Gorecki
 
 narginchk(2, 3)
 
@@ -55,12 +55,12 @@ if nCells > 2
                 iGenerator = i;
                 break;
             else
-                error(['HACopula.cell2tree: The generator (' HACCellModel{i}{1} ', ' num2str(HACCellModel{i}{2}) ') is not supported. For the supported generators, see the function isgenerator.']);
+                error('HACopula:cell2tree', ['HACopula.cell2tree: The generator (' HACCellModel{i}{1} ', ' num2str(HACCellModel{i}{2}) ') is not supported. For the supported generators, see the function isgenerator.']);
             end
         end
     end
     if ~isFound
-        error('HACopula.cell2tree: wrong cell HAC structure.');
+        error('HACopula:cell2tree', 'HACopula.cell2tree: wrong cell HAC structure.');
     end
     obj.Family = HACCellModel{iGenerator}{1};
     obj.Parameter = HACCellModel{iGenerator}{2};
@@ -81,8 +81,10 @@ if nCells > 2
             obj.Leaves = [obj.Leaves obj.Child{iChild}.Leaves];
             obj.Forks = [obj.Forks obj.Child{iChild}.Forks];
         end
+        
+        obj.Dim = size(obj.Leaves,2);
     end
 else
-    error('HACopula.cell2tree: Wrong cell HAC structure. Invalid number of subcells.')
+    error('HACopula:cell2tree', 'HACopula.cell2tree: Wrong cell HAC structure. Invalid number of subcells.')
 end
 end
