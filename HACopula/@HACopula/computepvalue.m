@@ -44,8 +44,8 @@ function pValue = computepvalue(obj, U, estimator, N)
 % References:
 % [Genest and Remillard, 2008] Genest, C., Remillard, B. (2008). Validity
 %   of the parametric bootstrap for goodness-of-fit: testing in
-%   semiparametric models. In Annales de lÿInstitut Henri Poincare:
-%   Probabilites et Statistiques, volume 44, pp. 1096ÿ1127
+%   semiparametric models. In Annales de l'Institut Henri Poincare:
+%   Probabilites et Statistiques, volume 44, pp. 1096-1127
 %
 % [Genest et al., 2009] Genest, C., Remillard, B., and Beaudoin, D.
 %    (2009). Goodness-of-fit tests for copulas: A review and a power
