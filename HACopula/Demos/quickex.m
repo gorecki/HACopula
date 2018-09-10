@@ -1,7 +1,7 @@
 % The quick example 
 %
 %
-% Copyright 2017 Jan Górecki
+% Copyright 2018 Jan Gorecki
 
 %% Installation (needed only for Octave)
 % uncomment and execute from the folder 'HACopula'
@@ -10,30 +10,43 @@
 % addpath([pwd '\' 'Auxiliary']);
 % addpath([pwd '\' 'Sampling']);
 % savepath;
+%
+% For Octave 4.4 (and later versions): 
+% 1) Download the 'statistics' package from 
+% https://octave.sourceforge.io/statistics/index.html
+% 2) Install and load the package:
+% pkg install statistics-1.4.0.tar.gz 
+% pkg load statistics
+%
+% For all versions of Octave, install similarly the symbolic package
+% OctSymPy from https://github.com/cbm755/octsympy
 
 %% Construct & plot a HAC model
 
 % define four Archimedean generators
-LAM8 = {'12', tau2theta('12', 0.8)}
-LAM9 = {'19', tau2theta('19', 0.7)}
-LAM10 = {'12', tau2theta('12', 0.5)}
-LAM11 = {'C', tau2theta('C', 0.2)}
+lam8RightRight  = {'12', tau2theta('12', 0.8)};
+lam9Left        = {'19', tau2theta('19', 0.7)};
+lam10Right      = {'12', tau2theta('12', 0.5)};
+lam11Root       = {'C', tau2theta('C', 0.2)};
 
 % define a 7-variate HAC
-HACModel = HACopula({LAM11, {LAM9, 2, 5, 6}, {LAM10, 1, {LAM8, 3, 4, 7}}});
+HACModel = HACopula({lam11Root, {lam9Left, 2, 5, 6}, ...
+                    {lam10Right, 1, {lam8RightRight, 3, 4, 7}}});
 
+% plot two visualizations of the HAC
 plot(HACModel);
+plotbipdfs(HACModel);
 
 %% Computing probabilities involving a HAC
 
-disp('HACModel at (0.5, ..., 0.5)');
-evaluate(HACModel, 0.5 * ones(1, getdimension(HACModel)))
+disp('The CDF of HACModel evaluated at (0.5, ..., 0.5)');
+cdf(HACModel, 0.5 * ones(1, HACModel.Dim))
 
 disp('Prob{(U_1, ..., U_7) in the hypercube ((0.5, ..., 0.5), (0.9, ..., 0.9)]}');
-prob(HACModel, 0.5 * ones(1, 7), 0.9 * ones(1, 7))
+prob(HACModel, 0.5 * ones(1, HACModel.Dim), 0.9 * ones(1, HACModel.Dim))
 
 disp('The survival copula of HACModel at (0.5, ..., 0.5)');
-evalsurv(HACModel, 0.5 * ones(1, 7))
+evalsurv(HACModel, 0.5 * ones(1, HACModel.Dim))
 
 %% Sample and plot data
 
@@ -61,47 +74,46 @@ plotbimargins(UKnown);
 U = pobs(UKnown);
 % compute three HAC estimates assuming different sets of the underlying families
 fitC1219 = HACopulafit(U, getfamilies(HACModel));
-fitC12 = HACopulafit(U, {'C', '12'});
-fitC = HACopulafit(U, {'C'});
+fitC     = HACopulafit(U, {'C'});
 
 plot(fitC1219);
-plot(fitC12);
 plot(fitC);
 
 
 %% Goodness-of-fit & other statistics
 
 disp('goodness-of-fit');
-[gofdSnE(fitC1219, U) ...
- gofdSnE(fitC12, U) ...
- gofdSnE(fitC, U)]
+[gofdSnE(fitC1219, U) gofdSnE(fitC, U)]
 
-% compute an approximation of p value 
-disp('computing p value...');
+% compute an approximation of p values 
+disp('Computing the p value for the first estimate...');
 tic;
-estimator1 = @(U) HACopulafit(U, getfamilies(HACModel));
-computepvalue(fitC1219, U, estimator1, 100)
+estimatorC1219 = @(U) HACopulafit(U, getfamilies(HACModel));
+computepvalue(fitC1219, U, estimatorC1219, 100)
+toc
+disp('Computing the p value for the second estimate...');
+tic;
+estimatorC = @(U) HACopulafit(U, {'C'});
+computepvalue(fitC, U, estimatorC, 100)
 toc
 
-% compute the Kendall correlation matrix
+
+% compute the matrix of pairwise Kendall's taus
 K = kendallTauMatrix(U);
 
 % compute a distance between a HAC estimate and K
 disp('kendall (HAC vs sample)');
-[distance(fitC1219, K) ...
- distance(fitC12, K) ...
- distance(fitC, K)]
+[distance(fitC1219, K) distance(fitC, K)]
 
 % compute a distance between a HAC estimate and the HAC model
 DISTANCE_TYPE = {'kendall', 'upper-tail', 'lower-tail'};
 for i = 1:3
     disp([DISTANCE_TYPE{i} ' (HAC vs HAC)']);
     [distance(fitC1219, HACModel, DISTANCE_TYPE{i}) ...
-     distance(fitC12, HACModel, DISTANCE_TYPE{i}) ...
      distance(fitC, HACModel, DISTANCE_TYPE{i})]
 end
 
-% show the matrix of Kendall's tau for a HAC
+% show the matrix of pairwise Kendall's tau for a HAC
 getdependencematrix(HACModel, 'kendall')
 getdependencematrix(fitC1219, 'kendall')
 
@@ -113,8 +125,25 @@ getdependencematrix(fitC, 'tails')
 
 % show if the structure of two HACs are the same
 comparestructures(HACModel, fitC1219)
-% also compare the families of two HACs
-[isSameStruc, isSameFams, nSameFams] = comparestructures(fitC1219, fitC12)
+
+% compare HACModel to a 7-AC and get the level of match of the structures
+[isSameStruc, ratioStruc] = comparestructures(HACModel, ...
+                            HACopula({{'C', 0.5}, 1, 2, 3, 4, 5, 6, 7}))
+% Note that the 7-AC cell model {{'C', 0.5}, 1, 2, 3, 4, 5, 6, 7} can be
+% also written as [{{'C', 0.5}}, [num2cell(1:HACModel.Dim)]] , which is
+% less easy to read but easier to scale.
+
+% compare the families of two HACs
+[isSameFams, ratioFams] = comparefamilies(fitC1219, fitC)
+
 % get a LaTeX formula of a part of the HACModel's cummulative distribution
 % function
 tolatex(HACModel.Child{2}, 'cdf')
+
+% access the bivariate margin of HACModel corresponding to 
+% variables 1 and 3
+biMargin = getbimargin(HACModel, 1, 6);
+
+% evaluate the bivariate margin's pdf at (0.9, 0.5)
+ACpdf(biMargin.Family, biMargin.Parameter, 0.9, 0.5)
+

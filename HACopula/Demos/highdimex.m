@@ -1,9 +1,9 @@
 % The high-dimensional example
 %
 %
-% Copyright 2017 Jan Górecki
+% Copyright 2018 Jan Gorecki
 
-HACModel = gethomomodel(11, 10, 'C', 0.1, 0.08);
+HACModel = getfullmodel(11, 10, 'C', 0.1, 0.08);
 plot(HACModel);
 
 if isoctave
@@ -19,9 +19,27 @@ else % MATLAB
     toc
 end
 
-tic; disp('Kendall''s matrix...'); 
+% NOTE: In Octave, the (standard) computation of the Kendall matrix requires a lot of 
+% memory and we have experienced several times a system (Windows) hangup
+% during the computation. However, after closing all other applications, 
+% the computation has finished successfully.
+tic; disp('Slow (O(n^2)) computation of Kendall''s matrix...'); 
+KSlow = kendallTauMatrix(U);
+toc
+
+% compile fastKendallTau.cpp to a MATLAB executable (.mex) file
+if isoctave
+     mkoctfile --mex fastKendallTau.cpp
+else % MATLAB
+    mex fastKendallTau.cpp
+end
+
+tic; disp('Fast (O(n*log(n))) computation of Kendall''s matrix...'); 
 K = kendallTauMatrix(U);
 toc
+
+disp('Are the results the same?');
+sum(sum(K == KSlow)) == numel(K)
 
 tic; disp('Estimating (1)...');
 fit1Avg = HACopulafit(U, {'C'}, 'Reestimator', 'Ktauavg', 'KendallMatrix', K);
@@ -55,12 +73,13 @@ for i = 1:2
     toc
 end
 
-tic; disp('comparing the structures...')
-[comparestructures(HACModel, fit1Avg) ...
-comparestructures(HACModel, fit2Min)]
+tic; disp('structures match ratio...')
+[~, fit1AvgRatio] = comparestructures(HACModel, fit1Avg);
+[~, fit2MinRatio] = comparestructures(HACModel, fit2Min);
+[fit1AvgRatio fit2MinRatio]
 toc
 
-tic; disp('evaluating at (0.5, ..., 0.5)...')
-[evaluate(fit1Avg, 0.5 * ones(1, getdimension(HACModel))) ...
-evaluate(fit2Min, 0.5 * ones(1, getdimension(HACModel)))]
+tic; disp('evaluating CDF at (0.5, ..., 0.5)...')
+[cdf(fit1Avg, 0.5 * ones(1, HACModel.Dim)) ...
+cdf(fit2Min, 0.5 * ones(1, HACModel.Dim))]
 toc
