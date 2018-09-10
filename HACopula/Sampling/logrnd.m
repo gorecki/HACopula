@@ -6,12 +6,12 @@ function out = logrnd(alpha, n)
 % the algorithm "LK" from Kemp (1981).
 %
 % Reference:
-% Kemp, A. W. (1981), “Efficient Generation of Logarithmically Distributed Pseudo-Random
-% Variables”, Journal of the Royal Statistical Society: Series C (Applied Statistics), 30(3),
-% 249–253.
+% Kemp, A. W. (1981), ÿEfficient Generation of Logarithmically Distributed Pseudo-Random
+% Variablesÿ, Journal of the Royal Statistical Society: Series C (Applied Statistics), 30(3),
+% 249ÿ253.
 %
 %
-% Copyright 2017 Jan Górecki
+% Copyright 2018 Jan Gorecki
 
 out = zeros(n,1);
 for i = 1:n
@@ -21,7 +21,7 @@ for i = 1:n
         out(i) = 1;
     else
         u1 = rand(1,1);
-        q = 1 - exp(u1 * h);
+        q = -expm1(u1 * h);
         if (u2 < q^2)
             out(i) = floor(1 + log(u2)/log(q));
         elseif (u2 > q)
@@ -30,4 +30,6 @@ for i = 1:n
             out(i) = 2;
         end
     end
+end
+
 end

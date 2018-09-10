@@ -12,7 +12,7 @@ function out = tiltedstablernd(h, alpha, v0)
 %     Hochschulschriften.
 %
 %
-% Copyright 2017 Jan Górecki
+% Copyright 2018 Jan Gorecki
 
 if alpha == 1
     out = v0;
@@ -24,7 +24,7 @@ n = size(v0,1);
 % check if h is of the same size as v0
 if size(h,1) ~= n  % if not
     if size(h,1) ~=1
-        error('tiltedstablernd: parameter h must be either scalar or of the same size as v0.');
+        error('HACopula:BadInputs', 'tiltedstablernd: parameter h must be either scalar or of the same size as v0.');
     end
     % make it of the same size
     h = ones(n,1)*h;
@@ -58,3 +58,5 @@ end
 
 
 out = V_sum;
+
+end

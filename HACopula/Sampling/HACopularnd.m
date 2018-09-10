@@ -6,7 +6,12 @@ function [U, I] = HACopularnd(HACModel, n, varargin)
 % described by an instance of the HACopula class *HACModel*. All sampling
 % algorithms are based on the approaches from [Hofert, 2010] and [Hofert,
 % 2012].
-% 
+%
+% Installation note (Octave):
+% From version 4.4, some functions necessary in HACopularnd (e.g., gamrnd)
+% have been moved to the 'statistics' package. Please, install and load
+% this package before the first use (https://octave.sourceforge.io/statistics/index.html).
+%
 % Usage:
 % U = HACopularnd(HACModel, n)
 % Note that the second output argument and varargin are used just for inner
@@ -45,14 +50,14 @@ function [U, I] = HACopularnd(HACModel, n, varargin)
 %     Computation and Simulation, 82(9):1239-1255.
 %
 %
-% Copyright 2017 Jan Górecki
+% Copyright 2018 Jan Gorecki
 
 % -------------------------------------------------------------------------
 
 TAU_INDEPENDENCE = 1e-15; % generators with tau lower than TAU_INDEPENDENCE 
                           % are substituted by the independence generator
 
-% is it variable?
+% is it a variable?
 if ~isa(HACModel, 'HACopula')
     % if so, sample standard uniform distribution
     U = rand(n,1);
@@ -106,7 +111,7 @@ else
     end
 end
 
-% join matrices
+% join the matrices
 U = cell2mat(U);
 I = cell2mat(I);
 
@@ -168,12 +173,12 @@ while cont
             % replace the rows with inf by the new ones
             U(infRows,:) = Xadd;
         else
-            error(['HACopularnd: maximal limit of rows containing NaNs or Infs exceeded, i.e., > ' num2str(NAN_INF_LIMIT*100) '% .']);
+            error('HACopula:HACopularnd', ['HACopularnd: maximal limit of rows containing NaNs or Infs exceeded, i.e., > ' num2str(NAN_INF_LIMIT*100) '% .']);
         end
         cont = sum(any(isinf(U) | isnan(U),2)) >= 1;
         nRepeats = nRepeats + 1;
         if nRepeats > MAX_REPEATS
-            error('HACopularnd: maximal number of repeating of replacing inf rows exceeded.');
+            error('HACopula:HACopularnd', 'HACopularnd: maximal number of repeating of replacing inf rows exceeded.');
         end
     else
         cont = false;
