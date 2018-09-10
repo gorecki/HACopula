@@ -15,7 +15,7 @@ function out = getsymbgenerator(family, inversion)
 % 2nd edition.
 %
 %
-% Copyright 2017 Jan Górecki
+% Copyright 2018 Jan Gorecki
 
 syms t;
 syms theta;
@@ -42,7 +42,7 @@ if (inversion == 0)
         case '20'
             out = (log(t + exp(1)))^(-1/theta);
         otherwise
-            error('getsymbgenerator: Unknown Archimedean family.');
+            error('HACopula:BadInputs', 'getsymbgenerator: Unknown Archimedean family.');
     end
 else
     %the inversion of the generator
@@ -66,8 +66,8 @@ else
         case '20'
             out = exp(t^(-theta)) - exp(1);
         otherwise
-            error('getsymbgenerator: Unknown Archimedean family');
+            error('HACopula:BadInputs', 'getsymbgenerator: Unknown Archimedean family');
     end
 end
     
-
+end

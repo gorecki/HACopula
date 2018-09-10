@@ -2,7 +2,7 @@ function Sn = goffullpairwise(obj, U, aggFcn, statisticName, emp2copulas)
 %GOFFULLPAIRWISE - Aggregated pairwise goodness-of-fit
 %statistic
 %
-% This function computes the bivariate version of the Cramér-von Mises
+% This function computes the bivariate version of the Cramer-von Mises
 % statistic statisticName ('K', 'R' or 'E') for each of the
 % bivariate margins of the HAC obj and the observations U, and
 % aggregates them using the aggregation function aggFcn
@@ -13,11 +13,11 @@ function Sn = goffullpairwise(obj, U, aggFcn, statisticName, emp2copulas)
 % computeallemp2copulas(U).
 %
 %
-% Copyright 2017 Jan Górecki
+% Copyright 2018 Jan Gorecki
 
 % perform basic data checks
 if ~iscopuladata(U)
-    warning('HACopulafit::goffullpairwise: At least one column of U was rejected to be standard uniform according to KS test at the 5% significance level, i.e., U might not be a sample from a copula.');
+    warning('HACopula:notCopulaData', 'HACopulafit::goffullpairwise: At least one column of U was rejected to be standard uniform according to KS test at the 5%% significance level, i.e., U might not be a sample from a copula.');
 end
 
 if (~exist('emp2copulas', 'var'))
@@ -25,8 +25,8 @@ if (~exist('emp2copulas', 'var'))
 end
 
 d = size(U, 2);
-if getdimension(obj) ~= d
-    error('HACopula::goffullpairwise: The data and the HAC are of different dimensions.')
+if obj.Dim ~= d
+    error('HACopula:goffullpairwise', 'HACopula::goffullpairwise: The data and the HAC are of different dimensions.')
 end
 
 pairSn = zeros(d, d);
@@ -49,6 +49,6 @@ switch aggFcn
     case 'min'
         Sn = min(pairSnVec);
     otherwise
-        error('gof2Sn: Unsupported aggregation function.');
+        error('HACopula:goffullpairwise', 'HACopula::goffullpairwise: Unsupported aggregation function.');
 end
 end

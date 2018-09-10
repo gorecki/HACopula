@@ -4,19 +4,19 @@ function out = findvars2flip(K)
 % Returs an array of indices of variables, which should be flipped (U := 1
 % -U) in order to reduce negative correlation in data corresponding to the
 % Kendall correlation matrix in the input *K*. This function implements
-% Algorithm 4 from [Górecki et al., 2016a]. Note that the outputted indices
+% Algorithm 4 from [Gorecki et al., 2016a]. Note that the outputted indices
 % are ordered according to how much the negative correlation is reduced by
 % flipping the corresponding variable, beginning with the one that reduces
 % the negative correlation the most.
 %
 % References:
-% [Górecki et al., 2016a] Górecki, J., Hofert, M., and Holeòa, M. (2016). An 
+% [Gorecki et al., 2016a] Gorecki, J., Hofert, M., and Holena, M. (2016). An 
 %     approach to structure determination and estimation of hierarchical
 %     Archimedean copulas and its application to bayesian classication.
 %     Journal of Intelligent Information Systems, pages 21-59.
 %
 %
-% Copyright 2017 Jan Górecki
+% Copyright 2018 Jan Gorecki
 
 d = size(K,2);
 
@@ -48,3 +48,5 @@ else
 end
 
 out = invInd(1:counter - 1);
+
+end

@@ -11,12 +11,12 @@ function jumpIndex = findjump(distArray)
 % Section 6.1 in 
 %
 % References:
-% [Górecki et al., 2016b] Górecki, J., Hofert, M., and Holeòa, M. (2016). On
-%     structure, family and parameter estimation of hierarchical
-%     Archimedean copulas. arXiv preprint arXiv:1611.09225.
+% [Gorecki et al., 2017] On Structure, Family and Parameter Estimation
+%     of Hierarchical Archimedean copulas. Journal of Statistical Computation 
+%     and Simulation, 87(17), 3261-3324
 %
 %
-% Copyright 2017 Jan Górecki
+% Copyright 2018 Jan Gorecki
 
 if size(distArray,2) == 1
     jumpIndex = 1;
@@ -54,3 +54,5 @@ end
 
 % transform to the original size
 jumpIndex = jumpIndex + firstInd - 1;
+
+end

@@ -17,7 +17,7 @@ function coefficient = gettaildependence(family, theta, type)
 % [Nelsen, 2006] Nelsen, R. (2006). An Introduction to Copulas. Springer,
 %     2nd edition.
 %
-% Copyright 2017 Jan Górecki
+% Copyright 2018 Jan Gorecki
 
 if strcmp(type,'lower')
     switch family
@@ -30,7 +30,7 @@ if strcmp(type,'lower')
         case {'19', '20'}
             coefficient = 1;
         otherwise
-            error('gettaildependence: Unknown family.');
+            error('HACopula:BadInputs', 'gettaildependence: Unknown family.');
     end
 elseif strcmp(type,'upper')
     switch family
@@ -39,9 +39,11 @@ elseif strcmp(type,'upper')
         case {'G', 'J', '12', '14'}
             coefficient = 2 - 2^(1/theta);
         otherwise
-            error('gettaildependence: Unknown family.');
+            error('HACopula:BadInputs', 'gettaildependence: Unknown family.');
     end
     
 else
-    error('gettaildependence: Unsupported type of a tail. Choose from {''lower'', ''upper''}');
+    error('HACopula:BadInputs', 'gettaildependence: Unsupported type of a tail. Choose from {''lower'', ''upper''}');
+end
+
 end

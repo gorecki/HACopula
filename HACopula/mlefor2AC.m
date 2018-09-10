@@ -27,47 +27,13 @@ function thetaEst = mlefor2AC(U, family, tau, lBound, uBound)
 % 12:347-368.
 %
 %
-% Copyright 2017 Jan Górecki
+% Copyright 2018 Jan Gorecki
 
 % The densities below for the given family are obtained through:
 % 0) syms u1; syms u2; syms theta3;
 % 1) AC = HACopula({{'20', 1.5}, 1, 2});
-% 2) simple(diff(diff(getcdf(AC), u1), u2))
+% 2) simplify(diff(diff(getcdf(AC), u1), u2))
 
-switch family
-    case 'A'
-        pdf = @(u1, u2, theta) ((u2.*(u1 - 1) - u1 + 1).*theta.^2 + (u1 + u2.*(u1 + 1) - 2).*theta + 1)./(theta.*u1 - theta + theta.*u2 - theta.*u1.*u2 + 1).^3;
-    case 'C'
-        pdf = @(u1, u2, theta) (theta + 1)./(u1.^(theta + 1).*u2.^(theta + 1).*(1./u1.^theta + 1./u2.^theta - 1).^(1./theta + 2));
-    case 'F'
-        pdf = @(u1, u2, theta) -(theta.*(exp(theta.*(u1 + u2 + 1)) - exp(theta.*(u1 + u2 + 2))))./(exp(2.*theta.*(u1 + 1)) - ...
-            2.*exp(theta.*(u2 + 2)) - 2.*exp(theta.*(u1 + 2)) + exp(2.*theta.*(u2 + 1)) + exp(2.*theta) + 2.*exp(theta.*(u1 + u2 + 1))...
-            + 2.*exp(theta.*(u1 + u2 + 2)) + exp(2.*theta.*(u1 + u2)) - 2.*exp(theta.*(u1 + 2.*u2 + 1)) - 2.*exp(theta.*(2.*u1 + u2 + 1)));
-    case 'G'
-        pdf = @(u1, u2, theta) (exp(-((-log(u1)).^theta + (-log(u2)).^theta).^(1./theta)).*(-log(u1)).^theta.*(-log(u2)).^theta.*((-log(u1)).^theta +...
-            (-log(u2)).^theta).^(1./theta).*(theta + ((-log(u1)).^theta + (-log(u2)).^theta).^(1./theta) - 1))./...
-            (u1.*u2.*log(u1).*log(u2).*((-log(u1)).^theta + (-log(u2)).^theta).^2);
-    case 'J'
-        pdf = @(u1, u2, theta) ((1 - u1).^theta.*(1 - u2).^theta.*((1 - u1).^theta + (1 - u2).^theta - (1 - u1).^theta.*(1 - u2).^theta).^(1./theta - 2).*...
-            (theta + (1 - u1).^theta + (1 - u2).^theta - (1 - u1).^theta.*(1 - u2).^theta - 1))./((u1 - 1).*(u2 - 1));
-    case '12'
-        pdf = @(u1, u2, theta) ((1./u1 - 1).^theta.*(1./u2 - 1).^theta.*(((1./u1 - 1).^theta + (1./u2 - 1).^theta).^(2./theta).*(theta + 1) +...
-            ((1./u1 - 1).^theta + (1./u2 - 1).^theta).^(1./theta).*(theta - 1)))./(u1.*u2.*(((1./u1 - 1).^theta + (1./u2 - 1).^theta).^...
-            (1./theta) + 1).^3.*((1./u1 - 1).^theta + (1./u2 - 1).^theta).^2.*(u1 - 1).*(u2 - 1));
-    case '14'
-        pdf = @(u1, u2, theta) ((1./u1.^(1./theta) - 1).^theta.*(1./u2.^(1./theta) - 1).^theta.*((1./u1.^(1./theta) - 1).^theta + (1./u2.^(1./theta) - 1).^theta).^...
-            (1./theta - 2).*(theta + 2.*theta.*((1./u1.^(1./theta) - 1).^theta + (1./u2.^(1./theta) - 1).^theta).^(1./theta) - 1))./...
-            (theta.*u1.*u2.*(u1.^(1./theta) - 1).*(u2.^(1./theta) - 1).*(((1./u1.^(1./theta) - 1).^theta + (1./u2.^(1./theta) - 1).^theta).^(1./theta) + 1).^(theta + 2));
-    case '19'
-        pdf = @(u1, u2, theta) (theta.^3.*exp(theta./u1 + theta./u2).*(log(exp(theta./u1) + exp(theta./u2) - exp(theta)) + 2))./...
-            (u1.^2.*u2.^2.*log(exp(theta./u1) + exp(theta./u2) - exp(theta)).^3.*(exp(theta./u1) + exp(theta./u2) - exp(theta)).^2);
-    case '20'
-        pdf = @(u1, u2, theta) (1267650600228229401496703205376.*exp(1./u1.^theta + 1./u2.^theta).*(theta + theta.*log(exp(1./u1.^theta) + exp(1./u2.^theta)...
-            - 3060513257434037./1125899906842624) + 1))./(u1.^(theta + 1).*u2.^(theta + 1).*log(exp(1./u1.^theta) + exp(1./u2.^theta)...
-            - 3060513257434037./1125899906842624).^(1./theta + 2).*(1125899906842624.*exp(1./u1.^theta) + 1125899906842624.*exp(1./u2.^theta) - 3060513257434037).^2);
-    otherwise
-        error(['mlefor2AC: Family ''' family ''' is not supported.']);
-end
 
 if istauinvertible(family, tau) 
     % is tau inversion estimate if possible
@@ -88,10 +54,10 @@ else
     end
 end
 
-
+pdf = @(u1, u2, theta) ACpdf(family, theta, u1, u2);
 FMLE = @(theta)(-sum(log(pdfNaNCheck(pdf(U(:,1), U(:,2), max(lBound,min(uBound,theta))), U)))); % do NaN check and also bound (trim) theta to [lBound, uBound]
-opts = optimset('MaxFunEvals', 20, 'Display', 'off');
-%opts = optimset('Display', 'off');
+%opts = optimset('MaxFunEvals', 20, 'Display', 'off');
+opts = optimset('Display', 'off');
 %thetaEst = fminbnd(FMLE, lBound, min(uBound, 1000), opts);
 thetaEst = fminsearch(FMLE, start, opts);
 end
@@ -101,9 +67,9 @@ function likelihoods = pdfNaNCheck(likelihoods, data)
 [likelihoods, nNaNs] = nanapprox(likelihoods, data);
 if nNaNs > 0
     if nNaNs < length(likelihoods)
-        warning(['mlefor2AC::fminsearch::nanapprox: ' num2str(nNaNs) ' NaNs detected. Replacing by the likelihoods of the closest (in the Euclidian distance) data with non-NaN likelihoods.']);
+        warning('HACopula:NaN_detected', ['mlefor2AC::fminsearch::nanapprox: ' num2str(nNaNs) ' NaNs detected. Replacing by the likelihoods of the closest (in the Euclidian distance) data with non-NaN likelihoods.']);
     else
-        warning(['mlefor2AC::fminsearch::nanapprox: ' num2str(nNaNs) ' NaNs detected. Trying another theta value.']);
+        warning('HACopula:mlefor2AC', ['mlefor2AC::fminsearch::nanapprox: ' num2str(nNaNs) ' NaNs detected. Trying another theta value.']);
     end
 end
 end

@@ -2,16 +2,17 @@ function cpObj = copy(obj)
 % returns a copy of a HACopula object
 %
 %
-% Copyright 2017 Jan Górecki
+% Copyright 2018 Jan Gorecki
 
 % Make a shallow copy of all properties
-cpObj = HACopula();
-cpObj.Family = obj.Family;
-cpObj.Parameter = obj.Parameter;
-cpObj.Tau = obj.Tau;
-cpObj.TauOrdering = obj.TauOrdering;
-cpObj.Level = obj.Level;
-cpObj.Leaves = obj.Leaves;
+cpObj               = HACopula();
+cpObj.Family        = obj.Family;
+cpObj.Parameter     = obj.Parameter;
+cpObj.Tau           = obj.Tau;
+cpObj.TauOrdering   = obj.TauOrdering;
+cpObj.Level         = obj.Level;
+cpObj.Leaves        = obj.Leaves;
+cpObj.Dim           = obj.Dim;
 
 % redirect to the copied forks
 cpObj.Forks = {cpObj};

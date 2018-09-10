@@ -2,12 +2,12 @@ function familyRange = getfamilytaurange(family)
 %GETFAMILYTAURANGE - returns the parameter range of a given family
 %
 % References:
-% [Górecki et al., 2016b] Górecki, J., Hofert, M., and Holeòa, M. (2016). On
-%     structure, family and parameter estimation of hierarchical
-%     Archimedean copulas. Submitted for publication.
+% [Gorecki et al., 2017] On Structure, Family and Parameter Estimation
+%     of Hierarchical Archimedean copulas. Journal of Statistical Computation 
+%     and Simulation, 87(17), 3261-3324
 %
 %
-% Copyright 2017 Jan Górecki
+% Copyright 2018 Jan Gorecki
 
 switch family
     case 'A'
@@ -26,5 +26,7 @@ switch family
     case '?'
         familyRange = [-1 1]; % an arbitrary interval that corresponds to the maximal range of Kendall's tau          
     otherwise
-        error('istauinvertible: Unsupported family.')
+        error('HACopula:BadInputs', 'istauinvertible: Unsupported family.')
+end
+
 end

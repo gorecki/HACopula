@@ -17,7 +17,7 @@ function out = fastrejectionrnd(v0, h, c, Fm)
 %     Hochschulschriften.
 %
 %
-% Copyright 2017 Jan Górecki
+% Copyright 2018 Jan Gorecki
 
 % -------------------------------------------------------------------------
 
@@ -57,3 +57,5 @@ for i = 1:n
 end
 
 out = V_sum;
+
+end

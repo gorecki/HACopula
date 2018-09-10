@@ -11,11 +11,11 @@ function [bootstrapSamples,theirSn] = bootstrapSn(obj, estimator, bootstrapSize,
 %
 % For a given HAC, performs the bootstrap method proposed in
 % [Genest et al., 2009], returns the bootstrap samples and
-% their values of the rank-based Cramér-von Mises statistics
+% their values of the rank-based Cramer-von Mises statistics
 % (denoted Sn in the paper).
 %
 %
-% Copyright 2017 Jan Górecki
+% Copyright 2018 Jan Gorecki
 
 narginchk(2,4);
 

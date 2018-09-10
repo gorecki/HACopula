@@ -6,7 +6,7 @@ function decreaselevel(obj)
 % NOTE: This method modifies the input obj.
 %
 %
-% Copyright 2017 Jan Górecki
+% Copyright 2018 Jan Gorecki
 
 for i = 1:size(obj.Forks,2)
     if isa(obj.Forks{i},'HACopula')

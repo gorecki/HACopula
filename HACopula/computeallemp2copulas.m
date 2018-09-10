@@ -16,7 +16,7 @@ function emp2copulas = computeallemp2copulas(U)
 % 12:347-368.
 %
 %
-% Copyright 2017 Jan Górecki
+% Copyright 2018 Jan Gorecki
 
 [n, d] = size(U);
 
@@ -30,4 +30,6 @@ for i = 1:d
         end
         emp2copulas{i,j} = emp2copulas{i,j} / n;
     end
+end
+
 end

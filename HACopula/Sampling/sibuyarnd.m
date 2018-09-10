@@ -9,7 +9,7 @@ function V = sibuyarnd(alpha, n)
 %     Computation and Simulation, 82(9):1239-1255.
 %
 %
-% Copyright 2017 Jan Górecki
+% Copyright 2018 Jan Gorecki
 
 gamma_1_a = gamma(1 - alpha);
 V = zeros(n,1);

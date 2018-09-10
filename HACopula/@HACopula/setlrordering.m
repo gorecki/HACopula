@@ -18,7 +18,7 @@ function setlrordering(obj)
 % NOTE: This function modifies the input obj.
 %
 %
-% Copyright 2017 Jan Górecki
+% Copyright 2018 Jan Gorecki
 
 nChildren = size(obj.Child, 2);
 nDescForks = zeros(1, nChildren);

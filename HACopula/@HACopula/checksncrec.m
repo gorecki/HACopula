@@ -3,11 +3,11 @@ function checksncrec(parent, child)
 % SNC
 %
 %
-% Copyright 2017 Jan Górecki
+% Copyright 2018 Jan Gorecki
 
 % is the child a generator
 if ~isgenerator(child.Family, child.Parameter)
-    error(['HACopula.checksncrec: (' child.Family ', ' num2str(child.Parameter) ') is not a supported generator.']);
+    error('HACopula:checksncrec', ['HACopula.checksncrec: (' child.Family ', ' num2str(child.Parameter) ') is not a supported generator.']);
 end
 
 isSncSatisfied = true;
@@ -16,7 +16,7 @@ isSncSatisfied = true;
 if strcmp(parent.Family, child.Family)
     % homogeneous case
     if strcmp(parent.Family, '14')
-        error(['HACopula.checksncrec: The sufficient nesting condition check for the family combination (' ...
+        error('HACopula:checksncrec', ['HACopula.checksncrec: The sufficient nesting condition check for the family combination (' ...
             parent.Family ', ' child.Family ') at levels ' num2str(parent.Level) ' and ' num2str(child.Level) ...
             ' is not implemented (it is not known).']);
     else
@@ -47,7 +47,7 @@ else
                 isSncSatisfied = false;
             end
         otherwise
-            error(['HACopula.checksncrec: The sufficient nesting condition check for the family combination (' ...
+            error('HACopula:checksncrec', ['HACopula.checksncrec: The sufficient nesting condition check for the family combination (' ...
                 parent.Family ', ' child.Family ') at levels ' num2str(parent.Level) ' and ' num2str(child.Level) ...
                 ' is not implemented (the condition does not hold for any combination of the parameters or is not known).']);
     end
@@ -55,7 +55,7 @@ else
 end
 
 if ~isSncSatisfied
-    error(['HACopula.checksncrec: The parent-child pair ((' parent.Family ', ' num2str(parent.Parameter) ...
+    error('HACopula:checksncrec', ['HACopula.checksncrec: The parent-child pair ((' parent.Family ', ' num2str(parent.Parameter) ...
         '), (' child.Family ', ' num2str(child.Parameter) ...
         ')) at levels ' num2str(parent.Level) ' and ' num2str(child.Level) ...
         ' does not satisfy the sufficient nesting condition.']);

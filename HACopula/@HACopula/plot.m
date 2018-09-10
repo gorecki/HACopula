@@ -38,8 +38,10 @@ function fig = plot(obj, varargin)
 % FontSize          - a positive integer determining the font
 %                     size
 %
+% Output:
+% fig               - a handle to the rendered figure
 %
-% Copyright 2017 Jan Górecki
+% Copyright 2018 Jan Gorecki
 
 % default setting of the optional inputs
 graphType = 'tree';
@@ -52,7 +54,7 @@ narginchk(1,7);
 
 % check for additional parameters
 if mod(size(varargin,2),2) == 1
-    error('HACopula.plot: there must be an even number of the additional parameters');
+    error('HACopula:plot', 'HACopula.plot: there must be an even number of the additional parameters');
 end
 
 if size(varargin,2) >= 2
@@ -65,7 +67,7 @@ if size(varargin,2) >= 2
         try
             validatestring(parNames{i},{'GraphType', 'Positioning', 'ForkBackground', 'MarkerSize', 'FontSize'});
         catch
-            error(['The input, ''' parNames{i} ''', did not match any of the valid parameter names (GraphType, Positioning, ForkBackground, MarkerSize, FontSize).']);
+            error('HACopula:plot', ['The input, ''' parNames{i} ''', did not match any of the valid parameter names (GraphType, Positioning, ForkBackground, MarkerSize, FontSize).']);
         end
     end
     
@@ -75,11 +77,11 @@ if size(varargin,2) >= 2
     % is GraphType a parameter ?
     if size(iGraphType,2) > 0 %
         if size(iGraphType,2) > 1
-            error('HACopula.plot: GraphType is a repeating parameter.')
+            error('HACopula:plot', 'HACopula.plot: GraphType is a repeating parameter.')
         end
         graphType = parValues{iGraphType};
         if ~(strcmp(graphType, 'tree') || strcmp(graphType, 'dendrogram'))
-            error('HACopula.plot: the value corresponding to GraphType must be ''tree'' or ''dendrogram''.');
+            error('HACopula:plot', 'HACopula.plot: the value corresponding to GraphType must be ''tree'' or ''dendrogram''.');
         end
     end
     
@@ -89,14 +91,14 @@ if size(varargin,2) >= 2
     % is Positioning a parameter ?
     if size(iPositioning,2) > 0 %
         if size(iPositioning,2) > 1
-            error('HACopula.plot: Positioning is a repeating parameter.')
+            error('HACopula:plot', 'HACopula.plot: Positioning is a repeating parameter.')
         end
         positioning = parValues{iPositioning};
         if ~(strcmp(positioning, 'even') || strcmp(positioning, 'tau'))
-            error('HACopula.plot: the value corresponding to Positioning must be ''even'' or ''tau''.');
+            error('HACopula:plot', 'HACopula.plot: the value corresponding to Positioning must be ''even'' or ''tau''.');
         end
         if strcmp(graphType, 'tree') && strcmp(positioning, 'tau')
-            warning(['HACopula.plot: Some of the edges could cross each other for the setting GraphType=''tree'' '...
+            warning('HACopula:plot', ['HACopula.plot: Some of the edges could cross each other for the setting GraphType=''tree'' '...
                 'and Positioning=''tau''. Use GraphType=''tree'' and Positioning=''even'' instead or use GraphType=''dendrogram''.']);
         end
     end
@@ -107,11 +109,11 @@ if size(varargin,2) >= 2
     % is ForkBackground a parameter ?
     if size(iForkBackground,2) > 0 %
         if size(iForkBackground,2) > 1
-            error('HACopula.plot: ForkBackground is a repeating parameter.')
+            error('HACopula:plot', 'HACopula.plot: ForkBackground is a repeating parameter.')
         end
         forkBackground = parValues{iForkBackground};
         if ~(strcmp(forkBackground, 'white') || strcmp(forkBackground, 'none'))
-            error('HACopula.plot: the value corresponding to ForkBackground must be ''white'' or ''none''.');
+            error('HACopula:plot', 'HACopula.plot: the value corresponding to ForkBackground must be ''white'' or ''none''.');
         end
     end
     
@@ -120,7 +122,7 @@ if size(varargin,2) >= 2
     % is MarkerSize a parameter ?
     if size(iMarkerSize,2) > 0 %
         if size(iMarkerSize,2) > 1
-            error('HACopula.plot: MarkerSize is a repeating parameter.')
+            error('HACopula:plot', 'HACopula.plot: MarkerSize is a repeating parameter.')
         end
         markerSize = parValues{iMarkerSize};
     end
@@ -130,7 +132,7 @@ if size(varargin,2) >= 2
     % is FontSize a parameter ?
     if size(iFontSize,2) > 0 %
         if size(iFontSize,2) > 1
-            error('HACopula.plot: FontSize is a repeating parameter.')
+            error('HACopula:plot', 'HACopula.plot: FontSize is a repeating parameter.')
         end
         fontSize = parValues{iFontSize};
     end
@@ -141,7 +143,7 @@ end
 
 % get models parameters
 maxLevel = getmaxlevel(obj);
-d = getdimension(obj);
+d = obj.Dim;
 k = size(obj.Forks,2);
 
 % do a copy of HACopula in order not to change the original
@@ -198,7 +200,7 @@ switch positioning
         text(move, 0, '1 ', 'HorizontalAlignment', 'right', 'FontSize',17, 'Interpreter','latex', 'rotation',0);
         text(move, 1, '0 ', 'HorizontalAlignment', 'right', 'FontSize',17, 'Interpreter','latex', 'rotation',0);
     otherwise
-        error(['HACopula::plotHACrec: Positioning ' positioning ' is not supported.']);
+        error('HACopula:plot', ['HACopula::plot: Positioning ' positioning ' is not supported.']);
 end
 
 hold off;

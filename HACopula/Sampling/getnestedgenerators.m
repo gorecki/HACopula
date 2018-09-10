@@ -14,16 +14,20 @@ function out = getnestedgenerators(family1, family2, theta1, theta2)
 % %\psi_0^{-1}(\psi_1(t)) = 
 % simplify(subs(subs(getsymbgenerator('19',1), theta, theta1), t, subs(getsymbgenerator('19',0), theta, theta2)))
 %
+% NOTE2:
+% In some of the formulas, exp(x)-1 is substituted by more accurate expm1(x)
+%
+%
 % References:
-% [Górecki et al., 2016b] Górecki, J., Hofert, M., and Holeòa, M. (2016). On
-%     structure, family and parameter estimation of hierarchical
-%     Archimedean copulas. Submitted for publication.
+% [Gorecki et al., 2017] On Structure, Family and Parameter Estimation
+%     of Hierarchical Archimedean copulas. Journal of Statistical Computation 
+%     and Simulation, 87(17), 3261-3324
 % [Hofert, 2010] Hofert, M. (2010). Sampling Nested Archimedean Copulas
 %     with Applications to CDO Pricing. Suedwestdeutscher Verlag fuer
 %     Hochschulschriften.
 %
 %
-% Copyright 2017 Jan Górecki
+% Copyright 2018 Jan Gorecki
 
 cnames = [family1 family2];
 
@@ -39,11 +43,11 @@ switch cnames
     case 'CC'
         out = @(t, v0x) ( exp( -v0x .* ((1+t).^(theta1/theta2) - 1) ) );
     case 'A20'
-        out = @(t, v0x) (1./(theta1 - theta1*log(t + 3060513257434037/1125899906842624).^(1/theta2) + log(t + 3060513257434037/1125899906842624).^(1/theta2)).^v0x);
+        out = @(t, v0x) (1./(theta1 - theta1*log(t + exp(1)).^(1/theta2) + log(t + exp(1)).^(1/theta2)).^v0x);
     case 'C20'
-        out = @(t, v0x) (1./exp(v0x.*(1./(1./log(t + 3060513257434037/1125899906842624).^(1/theta2)).^theta1 - 1)));
+        out = @(t, v0x) (1./exp(v0x.*(1./(1./log(t + exp(1)).^(1/theta2)).^theta1 - 1)));
     case 'FF'
-        out = @(t, v0x) ((1-(1-exp(-t).*(1-exp(-theta2))).^(theta1./theta2))/(1-exp(-theta1))).^v0x;
+        out = @(t, v0x) ((1-(1-exp(-t).*(-expm1(-theta2))).^(theta1./theta2))/(-expm1(-theta1))).^v0x;
     case 'GG'
         out = @(t, v0x) (exp(-v0x.*t.^(theta1/theta2)));
     case 'C12'
@@ -51,11 +55,13 @@ switch cnames
     case 'C14'
         out = @(t, v0x) (exp(-v0x.* (1./(1./(t.^(1./theta2) + 1).^theta2).^theta1 - 1 )));
     case 'JJ'
-        out = @(t, v0x) (exp(-v0x.* (-log(1 - ((1 - exp(-t)).^(1./theta2)).^theta1))));
+        out = @(t, v0x) (exp(-v0x.* (-log(1 - ((-expm1(-t)).^(1./theta2)).^theta1))));
     case '1212'
         out = @(t, v0x) (exp(-v0x.* ((t.^(1./theta2)).^theta1)));
     case '1919'
         out = @(t, v0x) (exp(-v0x.* ((t + exp(theta2)).^(theta1/theta2) - exp(theta1))));   
     otherwise
-        error(['get_nonsym_generator01: class combination ' cnames ' not supported']);
+        error('HACopula:getnestedgenerators', ['getnestedgenerators: class combination ' cnames ' not supported']);
+end
+
 end

@@ -26,14 +26,14 @@ function [isCopulaData, hArray, pArray] = iscopuladata(U, varargin)
 %                             Kolmogorov-Smirnov test for each margin 
 %
 %
-% Copyright 2017 Jan Górecki
+% Copyright 2018 Jan Gorecki
 
 narginchk(1,2);
 
 if size(varargin, 2) == 1
     alpha = varargin{1};
     if ~(isnumeric(alpha) && (alpha >= 0) && (alpha <= 1))
-        error('The paramter ''alpha'' must be a number in [0, 1].')
+        error('HACopula:BadInputs', 'The paramter ''alpha'' must be a number in [0, 1].')
     end
 else
     alpha = 0.05;
@@ -41,26 +41,26 @@ end
 
 [n,d] = size(U);
 if n < 3
-    error('iscopuladata: the sample is too small (too few rows, i.e., n < 3)');
+    error('HACopula:iscopuladata', 'iscopuladata: the sample is too small (too few rows, i.e., n < 3)');
 end
 
 % check if there is no NaN in U
 if (sum(sum(isnan(U))) > 0) || sum(sum(isinf(U)))
-    error('iscopuladata: There are NaN or Inf in the input matrix U');
+    error('HACopula:BadInputs', 'iscopuladata: There are NaN or Inf in the input matrix U');
 end
     
 
 % check if the data lies in the unit hypercupe
 if sum(sum(U < 0)) || sum(sum(U > 1))
-    error('iscopuladata: The data has to be strictly in the intervall [0,1]')
+    error('HACopula:BadInputs', 'iscopuladata: The data has to be strictly in the intervall [0,1]')
 elseif sum(sum(U == 0)) || sum(sum(U == 1))
-    warning('iscopuladata: Some of the data is on the bound of the unit cube. Not all methods are stable or some functions give back non-finite results, if some input (Copula-)data is exactly 0 or 1.')
+    warning('HACopula:iscopuladata', 'iscopuladata: Some of the data is on the bound of the unit cube. Not all methods are stable or some functions give back non-finite results, if some input (Copula-)data is exactly 0 or 1.')
 end
 
 if isoctave
-    warning(['iscopuladata (for Octave): the ''kstest2'' function used in iscopuladata' ...
+    warning('HACopula:iscopuladata', ['iscopuladata (for Octave): the ''kstest2'' function used in iscopuladata' ...
         ' to test marginal uniformity of the data belongs to the statistics package from Octave' ...
-        'Forge but has not yet been implemented (7.4.2017). Ommitting this test...']);
+        'Forge but has not yet been implemented (9.8.2018). Omitting this test...']);
     isCopulaData = 1;
     hArray = zeros(1, d);
     pArray = zeros(1, d);

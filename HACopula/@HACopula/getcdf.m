@@ -4,14 +4,14 @@ function HACCdf = getcdf(obj)
 % In Octave, the OctSymPy package is needed (https://github.com/cbm755/octsympy).
 %
 %
-% Copyright 2017 Jan Górecki
+% Copyright 2018 Jan Gorecki
 
 try
     syms t;
     syms theta;
 catch err
     if isoctave
-        error(['getcdf: Symbolic toolbox is needed. Please install it ' ...
+        error('HACopula:OctaveToolboxNotInstalled', ['getcdf: Symbolic toolbox is needed. Please install it ' ...
             '(https://github.com/cbm755/octsympy) and load it (pkg load symbolic).']);
     else % MATLAB
         rethrow(err);

@@ -21,7 +21,7 @@ function v0 = rndV0(family, theta, n)
 %     Hochschulschriften.
 %
 %
-% Copyright 2017 Jan Górecki
+% Copyright 2018 Jan Gorecki
 
 % NOTE: for tau close to 1, the sampling procedure shows numerical problems
 % several families, which is addressed by the constants below
@@ -35,9 +35,9 @@ switch family
     case 'C'
         v0 = gamrnd(1/theta,1,n,1);
     case 'F'
-        v0 = logrnd(1 - exp(-theta), n);
+        v0 = logrnd(-expm1(-theta), n);  % = logrnd(1 - exp(-theta), n);
         if theta2tau(family,theta) >= TAU_NUM_UNSTABLE_F
-            warning(['rndV0: sampling the family ' family ' with the parameter (corresponding to tau = ' num2str(theta2tau(family,theta)) ') >= ' num2str(TAU_NUM_UNSTABLE_F) ' may'...
+            warning('HACopula:sampling', ['rndV0: sampling the family ' family ' with the parameter (corresponding to tau = ' num2str(theta2tau(family,theta)) ') >= ' num2str(TAU_NUM_UNSTABLE_F) ' may'...
                 ' not produce any sample at all due to numerical instability. Use another family instead.']);
         end 
     case 'G'
@@ -45,7 +45,7 @@ switch family
     case 'J'
         v0 = sibuyarnd(1/theta, n);
         if theta2tau(family,theta) >= TAU_NUM_UNSTABLE
-            warning(['rndV0: sampling the family ' family ' with the parameter (corresponding to tau = ' num2str(theta2tau(family,theta)) ') >= ' num2str(TAU_NUM_UNSTABLE) ' may'...
+            warning('HACopula:sampling', ['rndV0: sampling the family ' family ' with the parameter (corresponding to tau = ' num2str(theta2tau(family,theta)) ') >= ' num2str(TAU_NUM_UNSTABLE) ' may'...
                 ' produce a sample that is not uniformly distributed in its univariate margins.']);
         end        
     case '12'
@@ -57,10 +57,11 @@ switch family
     case '20'
         v0 = gamrnd(gamrnd(1/theta, 1, n, 1), 1/exp(1));
         if theta2tau(family,theta) >= TAU_NUM_UNSTABLE
-            warning(['rndV0: sampling the family ' family ' with the parameter (corresponding to tau = ' num2str(theta2tau(family,theta)) ') >= ' num2str(TAU_NUM_UNSTABLE) ' may'...
+            warning('HACopula:sampling', ['rndV0: sampling the family ' family ' with the parameter (corresponding to tau = ' num2str(theta2tau(family,theta)) ') >= ' num2str(TAU_NUM_UNSTABLE) ' may'...
                 ' produce a sample that is not uniformly distributed in its univariate margins.']);
         end
     otherwise
-        error(['rndV0: family ' family ' is not supported']);
+        error('HACopula:sampling', ['rndV0: family ' family ' is not supported']);
 end
 
+end

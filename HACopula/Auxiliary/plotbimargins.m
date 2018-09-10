@@ -13,7 +13,7 @@ function plotbimargins(data, varargin)
 % plotbimargins(meas, species);
 %
 %
-% Copyright 2017 Jan Górecki
+% Copyright 2018 Jan Gorecki
 
 COLORS = 'bkrgymc';
 [n, d] = size(data);
@@ -78,7 +78,7 @@ else
                 axis off;
                 rectangle('Position',[0,0,1,1])
                 if isoctave
-                    text(0.5, 0.5, sprintf('%s%d%s','U',i,''), 'HorizontalAlignment', 'center', 'Interpreter','latex','FontSize', 11);
+                    text(0.5, 0.5, sprintf('%s%d%s','U_{',i,'}'), 'HorizontalAlignment', 'center', 'Interpreter','tex','FontSize', 11);
                 else % MATLAB
                     text(0.5, 0.5, sprintf('%s%d%s','$U_{',i,'}$'), 'HorizontalAlignment', 'center', 'Interpreter','latex','FontSize', 11);
                 end
@@ -87,7 +87,7 @@ else
                 rectangle('Position',[0,0,1,1])
                 %text(0.5, 0.5, sprintf('%s%d%d%s%3.3f%s','$\tau^n_{',j,i,'}=',A(i,j),'$'), 'HorizontalAlignment', 'center', 'Interpreter','latex', 'FontSize', 8);
                 if isoctave
-                    text(0.5, 0.7, sprintf('%s%d%d%s','tau',j,i,'='), 'HorizontalAlignment', 'center', 'Interpreter','latex', 'FontSize', 11);
+                    text(0.5, 0.7, sprintf('%s%d%d%s','\tau^n_{',j,i,'}='), 'HorizontalAlignment', 'center', 'Interpreter','tex', 'FontSize', 11);
                     text(0.5, 0.3, sprintf('%s%3.3f%s','',A(i,j),''), 'HorizontalAlignment', 'center', 'Interpreter','latex', 'FontSize', 11);
                 else % MATLAB
                     text(0.5, 0.7, sprintf('%s%d%d%s','$\tau^n_{',j,i,'}=$'), 'HorizontalAlignment', 'center', 'Interpreter','latex', 'FontSize', 11);
@@ -98,4 +98,4 @@ else
     end
 end
 
-
+end

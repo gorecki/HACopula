@@ -22,13 +22,13 @@ function [y, nNans] = nanapprox(y, x)
 % Assumes at least one real value in the input y.
 %
 %
-% Copyright 2017 Jan Górecki
+% Copyright 2018 Jan Gorecki
 
 nans = isnan(y) | isinf(y);
 nNans = sum(nans);
 if (nNans > 0)
     if nNans == length(y)
-        warning('nanapprox: No approximation has been done as no real value in the input y has been provided.');
+        warning('HACopula:nanapprox', 'nanapprox: No approximation has been done as no real value in the input y has been provided.');
     else
         iNans = find(nans);
         notNansInd = setdiff(1:length(y), iNans);

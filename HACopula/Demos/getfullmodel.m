@@ -1,17 +1,17 @@
-function model = gethomomodel(nLevels, dAC, family, tauRoot, tauDiff)
-%GETHOMOMODEL - construct a type of a HAC resembling a fully-nested AC
+function model = getfullmodel(nLevels, dAC, family, tauRoot, tauDiff)
+%GETFULLMODEL - construct a type of a HAC resembling a fully-nested AC
 %
-% Returns a homogeneous HAC model with all generators from the *family*
-% with nesting levels equal to *nLevels* and one *dAC*-dimensional AC at
+% Returns a HAC model with all generators from FAMILY
+% with nesting levels equal to NLEVELS and one DAC-dimensional AC at
 % each level, i.e., d = nLevels * dAC - (nLevels-1), such that tau =
-% *tauRoot* for the root and tau(child)-tau(parent) = *tauDiff*.
+% TAUROOT for the root and tau(child)-tau(parent) = TAUDIFF.
 %
 % Example:
-% gethomomodel(11, 10, 'C', 0.1, 0.08) returns a 100-HAC from the Clayton
+% getfullmodel(11, 10, 'C', 0.1, 0.08) returns a 100-HAC from the Clayton
 % family with tau = 0.1 at the root and tau(child)-tau(parent) = 0.08.
 %
 %
-% Copyright 2017 Jan Górecki
+% Copyright 2018 Jan Gorecki
 
 %% HACopula cell structure construction
 % the lowest level (without generator)
@@ -27,3 +27,5 @@ for iLevel = nLevels-1:-1:1
 end
 
 model = HACopula(HACCellModel);
+
+end
