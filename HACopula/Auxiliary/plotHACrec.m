@@ -34,7 +34,7 @@ if (nChildren > 1)
                                 plot([x(i) xm], [(HACModel.Level + 1) * STEP_Y  ...
                                     HACModel.Level * STEP_Y], 'k');
                             otherwise
-                                error(['HACopula.plotHACrec: GraphType ' graphType ' is not supported.']);
+                                error('HACopula:plotHACrec', ['HACopula.plotHACrec: GraphType ' graphType ' is not supported.']);
                         end
                     case 'tau'
                         switch graphType
@@ -44,10 +44,10 @@ if (nChildren > 1)
                             case 'tree'
                                 plot([x(i) xm], [0  1-HACModel.Tau], 'k');
                             otherwise
-                                error(['HACopula.plotHACrec: GraphType ' graphType ' is not supported.']);
+                                error('HACopula:plotHACrec', ['HACopula.plotHACrec: GraphType ' graphType ' is not supported.']);
                         end
                     otherwise
-                        error(['HACopula.plotHACrec: positioning ' positioning ' is not supported.']);
+                        error('HACopula:plotHACrec', ['HACopula.plotHACrec: positioning ' positioning ' is not supported.']);
                 end
             else
                 % it is a fork
@@ -61,7 +61,7 @@ if (nChildren > 1)
                                 plot([x(i) xm], [HACModel.Child{i}.Level * STEP_Y ...
                                     HACModel.Level * STEP_Y], 'k');
                             otherwise
-                                error(['HACopula.plotHACrec: GraphType ' graphType ' is not supported.']);
+                                error('HACopula:plotHACrec', ['HACopula.plotHACrec: GraphType ' graphType ' is not supported.']);
                         end
                     case 'tau'
                         switch graphType
@@ -71,10 +71,10 @@ if (nChildren > 1)
                             case 'tree'
                                 plot([x(i) xm], [1-HACModel.Child{i}.Tau 1-HACModel.Tau], 'k');
                             otherwise
-                                error(['HACopula.plotHACrec: GraphType ' graphType ' is not supported.']);
+                                error('HACopula:plotHACrec', ['HACopula.plotHACrec: GraphType ' graphType ' is not supported.']);
                         end
                     otherwise
-                        error(['HACopula.plotHACrec: positioning ' positioning ' is not supported.']);
+                        error('HACopula:plotHACrec', ['HACopula.plotHACrec: positioning ' positioning ' is not supported.']);
                 end
             end
         end
@@ -93,12 +93,12 @@ if isnumeric(HACModel) % is a leaf
                 case 'tree'
                     y = (parentLevel + 1) * STEP_Y;
                 otherwise
-                    error(['HACopula.plotHACrec: GraphType ' graphType ' is not supported.']);
+                    error('HACopula:plotHACrec', ['HACopula.plotHACrec: GraphType ' graphType ' is not supported.']);
             end
         case 'tau'
             y = 0;
         otherwise
-            error(['HACopula.plotHACrec: positioning ' positioning ' is not supported.']);
+            error('HACopula:plotHACrec', ['HACopula.plotHACrec: positioning ' positioning ' is not supported.']);
     end
     
     if (lines == 0)
@@ -118,7 +118,7 @@ else
         case 'tau'
             y = 1-HACModel.Tau;
         otherwise
-            error(['HACopula.plotHACrec: positioning ' positioning ' is not supported.']);
+            error('HACopula:plotHACrec', ['HACopula.plotHACrec: positioning ' positioning ' is not supported.']);
     end
 end
 
@@ -156,7 +156,7 @@ if (lines == 0)
             whiteSpace = '~~~';
         end
         % generators (forks) representation
-        % for the outputs for [Górecki et al., 2016b]
+        % for the outputs for [Gorecki et al., 2017]
         if strcmp(HACModel.Family,'A') || strcmp(HACModel.Family,'C')
             whiteSpaceAdd = '\,';
         else
@@ -164,13 +164,13 @@ if (lines == 0)
         end
         if isoctave
             
-            genText = ['\lambda(' num2str(HACModel.TauOrdering) ')' char(10) '(' type ', ' add ')' char(10) '\tau = ' sprintf('%3.3f',HACModel.Tau)];  % [Górecki et al., 2016b] example
+            genText = ['\lambda(' num2str(HACModel.TauOrdering) ')' char(10) '(' type ', ' add ')' char(10) '\tau = ' sprintf('%3.3f',HACModel.Tau)];  % [Gorecki et al., 2017] example
             % plot text
             text(x, y, genText,...
                 'HorizontalAlignment', 'center', 'FontSize',fontSize, 'Interpreter', 'tex', 'FontUnits', 'pixels',...
                 'BackgroundColor', forkBackground, 'Margin', 1);
         else % MATLAB
-            genText = ['$' whiteSpace '\lambda(' num2str(HACModel.TauOrdering) ')$' char(10) whiteSpUnknown '(' type ', ' add ')' char(10) whiteSpaceAdd '$\tau = ' sprintf('%3.3f',HACModel.Tau) '$'];  % [Górecki et al., 2016b] example
+            genText = ['$' whiteSpace '\lambda(' num2str(HACModel.TauOrdering) ')$' char(10) whiteSpUnknown '(' type ', ' add ')' char(10) whiteSpaceAdd '$\tau = ' sprintf('%3.3f',HACModel.Tau) '$'];  % [Gorecki et al., 2017] example
             % plot text
             text(x, y, genText,...
                 'HorizontalAlignment', 'center', 'FontSize',fontSize, 'Interpreter', 'latex', 'FontUnits', 'pixels',...
@@ -182,3 +182,5 @@ end
 out1 = iVariable;
 out2 = x;
 end
+
+
