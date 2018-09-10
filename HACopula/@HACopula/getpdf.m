@@ -4,7 +4,7 @@ function HACPdf = getpdf(obj)
 % In Octave, the OctSymPy package is needed (https://github.com/cbm755/octsympy).
 %
 %
-% Copyright 2017 Jan Górecki
+% Copyright 2018 Jan Gorecki
 
 
 leaves = obj.Leaves;

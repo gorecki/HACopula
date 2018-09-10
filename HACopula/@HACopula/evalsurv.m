@@ -6,7 +6,7 @@ function out = evalsurv(obj, U)
 % corners of the d-dimensional hypercube (U, 1).
 %
 %
-% Copyright 2017 Jan Górecki
+% Copyright 2018 Jan Gorecki
 
-out = prob(obj, U, 1*ones(1, getdimension(obj)));
+out = prob(obj, U, ones(1, obj.Dim));
 end

@@ -11,12 +11,12 @@ function depMatrix = getdependencematrix(obj, type)
 % coefficients are 1 for two same random variables.
 %
 %
-% Copyright 2017 Jan Górecki
+% Copyright 2018 Jan Gorecki
 
 if sum(strcmp({'kendall', 'upper-tail', 'lower-tail', 'tails'}, type)) == 0
-    error('HACopula::getdependencematrix: The input *type* must be from {''kendall'', ''upper-tail'', ''lower-tail'', ''tails''}.')
+    error('HACopula:getdependencematrix', 'HACopula::getdependencematrix: The input *type* must be from {''kendall'', ''upper-tail'', ''lower-tail'', ''tails''}.')
 end
-d = getdimension(obj);
+d = obj.Dim;
 depMatrix = ones(d, d);
 for i = 1:d
     for j = i+1:d

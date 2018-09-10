@@ -12,30 +12,30 @@ function dist = distance(obj, objToCompare, varargin)
 % the third argument as the 'kendall' type will be used.
 %
 %
-% Copyright 2017 Jan Górecki
+% Copyright 2018 Jan Gorecki
 
 % Inputs checking
 narginchk(2,3);
-d = getdimension(obj);
+d = obj.Dim;
 if isa(objToCompare,'HACopula')
-    if d ~= getdimension(objToCompare)
-        error('HACopula::distance: Both HACopula inputs must be of the same dimension.');
+    if d ~= objToCompare.Dim
+        error('HACopula:distance', 'HACopula::distance: Both HACopula inputs must be of the same dimension.');
     end
     type = varargin{1};
     if sum(strcmp({'kendall', 'upper-tail', 'lower-tail'}, type)) == 0
-        error('HACopula::distance: The input *type* must be from {''kendall'', ''upper-tail'',''lower-tail''}.');
+        error('HACopula:distance', 'HACopula::distance: The input *type* must be from {''kendall'', ''upper-tail'',''lower-tail''}.');
     end
 elseif ismatrix(objToCompare)
     if ~((max(size(objToCompare)) == min(size(objToCompare))) && ...
             (max(size(objToCompare)) == d))
-        error('HACopula::distance: The matrix objToCompare must be a of size d*d.');
+        error('HACopula:distance', 'HACopula::distance: The matrix objToCompare must be a of size d*d.');
     end
     type = 'kendall';
     if ~isempty(varargin)
-        warning('HACopula::distance: Ignoring the third argument and setting type=''kendall''.')
+        warning('HACopula:distance', 'HACopula::distance: Ignoring the third argument and setting type=''kendall''.')
     end
 else
-    error('HACopula::distance: The input objToCompare must be an instance of HACopula class or a Kendall correlation matrix.');
+    error('HACopula:distance', 'HACopula::distance: The input objToCompare must be an instance of HACopula class or a Kendall correlation matrix.');
 end
 
 % Distance computation

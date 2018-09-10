@@ -11,9 +11,9 @@ function out = prob(obj, l, u)
 % corners of the hypercube.
 %
 %
-% Copyright 2017 Jan Górecki
+% Copyright 2018 Jan Gorecki
 
-d = getdimension(obj);
+d = obj.Dim;
 % get the corners of the d-dimensional unit hypercube.
 [corner{1:d}] = ndgrid(logical([0 1]));
 corner = cat(d+1,corner{d:-1:1});
@@ -26,7 +26,7 @@ for i = 1:d
 end
 
 % evaluate the copula at these corners
-cornProb = evaluate(obj, lu);
+cornProb = cdf(obj, lu);
 
 % compute the C-volume of [l u]^d
 out = 0;

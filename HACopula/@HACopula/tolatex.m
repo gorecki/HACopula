@@ -8,21 +8,21 @@ function out = tolatex(obj, type)
 % In Octave, the OctSymPy package is needed (https://github.com/cbm755/octsympy).
 %
 %
-% Copyright 2017 Jan Górecki
+% Copyright 2018 Jan Gorecki
 
 if strcmp(type, 'cdf')
     f = getcdf(obj);
 elseif strcmp(type, 'pdf')
     f = getpdf(obj);
 else
-    error('HACopula: Unsupported type. Choose one from {''cdf'', ''pdf''}.');
+    error('HACopula:tolatex', 'HACopula: Unsupported type. Choose one from {''cdf'', ''pdf''}.');
 end
 
 %out = latex(simplify(f)); % simplification - uncommnent to simplify the formula
 %out = latex(simplify(f,'IgnoreAnalyticConstraints',true)); % simplification - uncommnent to simplify the formula
 out = latex(f);
 
-d = getdimension(obj.Root); % use Root for the case that one wants to get a child/descentant copula 
+d = obj.Root.Dim; % use Root for the case that one wants to get a child/descentant copula 
 for i = 1:d
     out = regexprep(out, sprintf('%s%d%s','\\mathrm{u', i, '}'), sprintf('%s%d%s','u_{', i, '}'));
 end

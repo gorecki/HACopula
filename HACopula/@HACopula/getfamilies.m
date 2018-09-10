@@ -2,7 +2,7 @@ function families = getfamilies(obj)
 %GETFAMILIES - the set of families involved in the obj.
 %
 %
-% Copyright 2017 Jan Górecki
+% Copyright 2018 Jan Gorecki
 
 families = {};
 for i = 1:length(obj.Forks)
