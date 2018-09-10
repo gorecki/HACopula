@@ -39,7 +39,7 @@ classdef HACopula < handle
     %     Economics, pages 239-244.
     % [Gorecki et al., 2017] On Structure, Family and Parameter Estimation
     %     of Hierarchical Archimedean copulas. Journal of Statistical Computation 
-    %     and Simulation, 87(17), 3261˙3324
+    %     and Simulation, 87(17), 3261-3324
     % [Nelsen, 2006] Nelsen, R. (2006). An Introduction to Copulas. Springer,
     %     2nd edition.
     % [Uyttendaele, et al., 2016] Uyttendaele, et al., On the estimation of
