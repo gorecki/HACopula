@@ -9,7 +9,7 @@ function Sn = gof2Sn(U, family, theta, gofTestName, emp2copula)
 %
 % NOTE: if a NaN or Inf is generated in the testing process, it is
 % replaced using the nanapprox function. If there are more than
-% NAN_ACCEPT_RATIO of such replacemetes (relative to the size(data,1)), a
+% NAN_ACCEPT_RATIO of such replacemetes (relative to size(data,1)), a
 % warning message is displayed.
 %
 % References:
@@ -18,19 +18,19 @@ function Sn = gof2Sn(U, family, theta, gofTestName, emp2copula)
 % 12:347-368.
 %
 %
-% Copyright 2017 Jan Górecki
+% Copyright 2018 Jan Gorecki
 
 NAN_ACCEPT_RATIO = 0.05;
 
 switch gofTestName
-    case 'K' % Cramér-von Mises statistic based on the Kendall transform 
+    case 'K' % Cramer-von Mises statistic based on the Kendall transform 
         Sn = gof2SnK(U, family, theta, emp2copula, NAN_ACCEPT_RATIO);
-    case 'R' % Cramér-von Mises statistic based on the Rosenblatt transform 
+    case 'R' % Cramer-von Mises statistic based on the Rosenblatt transform 
         Sn = gof2SnR(U, family, theta, NAN_ACCEPT_RATIO); % a precomputed emp2copula wouldn't have sense here 
-    case 'E' % Cramér-von Mises statistic based just on the empirical copula
+    case 'E' % Cramer-von Mises statistic based just on the empirical copula
         Sn = gof2SnE(U, family, theta, emp2copula, NAN_ACCEPT_RATIO);
     otherwise 
-        error('gofSn: unsupported gof test.');
+        error('HACopula:BadInputs', 'gofSn: unsupported gof test.');
 end
 end
 
@@ -46,7 +46,7 @@ yTheo = psi(psiinv(data(:,1))+psiinv(data(:,2)));
 % NaN check
 [yTheo, nNaNs] = nanapprox(yTheo, data);
 if nNaNs/size(data,1) > NAN_ACCEPT_RATIO
-    warning('gof2SnE: %d NaNs detected and replaced by their approximations.\n', nNaNs);
+    warning('HACopula:NaN_detected', 'gof2SnE: %d NaNs detected and replaced by their approximations.\n', nNaNs);
 end
 
 yEmp = empCopula;
@@ -57,10 +57,10 @@ end
 
 %--------------------------------------------------------------------------
 function Sn = gof2SnK(data, family, parameter, W, NAN_ACCEPT_RATIO)
-% Cramér - von Mises statistics for goodness-of-fit test based on the Kendall
+% Cramer - von Mises statistics for goodness-of-fit test based on the Kendall
 % transformation
 % for bivariate AC's only
-% W - empitical copula of data "W = C(U1,U2)" (precomputed using computeallemp2copulas)
+% W - empirical copula of data "W = C(U1,U2)" (precomputed using computeallemp2copulas)
 
 n = size(data,1);
 
@@ -72,37 +72,7 @@ end
 Kn = Kn/n;
 
 % computation of the theoretical distribution W 
-% compute Bivariate probability integral transform
-% the formulas below are computed using:
-% syms t;
-% syms theta;
-% family = 'A';
-% simple(t - getsymbgenerator(family, 1) / diff(getsymbgenerator(family, 1), t))
-
-t = ((1/n):(1/n):1)';
-theta = parameter;
-switch family
-    case 'A'
-        K_theta_n = t - (t.*log((t.*theta - theta + 1)./t).*(t.*theta - theta + 1))./(theta - 1);
-    case 'C'
-        K_theta_n = t - (t.*(t.^theta - 1))./theta;
-    case 'F'
-        K_theta_n = t + (exp(t.*theta).*log((exp(-t.*theta) - 1)./(exp(-theta) - 1)).*(exp(-t.*theta) - 1))./theta;
-    case 'G'
-        K_theta_n = t - (t.*log(t))./theta;
-    case 'J'
-        K_theta_n = t + (log(1 - (1 - t).^theta).*((1 - t).^theta - 1).*(1 - t).^(1 - theta))./theta;
-    case '12'
-        K_theta_n = t - (t.*(t - 1))./theta;
-    case '14'
-        K_theta_n = 2.*t - t.*t.^(1./theta);
-    case '19'
-        K_theta_n = t - (t.^2.*(exp((theta.*(t - 1))./t) - 1))./theta;
-    case '20'
-        K_theta_n = t - ((3060513257434037.*t.^(theta + 1).*exp(-1./t.^theta))./1125899906842624 - t.^(theta + 1))./theta;
-    otherwise
-        error('gof2SnK: Unsupported family.');
-end
+K_theta_n = ACkendtrans(family, parameter, ((1/n):(1/n):1)');
       
 % check NaNs
 % if a NaN is detected in K_theta, it is replaced by 0, if i < n/2, 
@@ -118,7 +88,7 @@ if (nNans > 0)
         end
     end
     if (nNans/n > NAN_ACCEPT_RATIO)
-        warning('gof2SnK: %d NaNs detected and replaced by their approximations. \n', nNans);
+        warning('HACopula:NaN_detected', ['gof2SnK: ' num2str(nNans) ' NaNs detected and replaced by their approximations.']);
     end
 end
 
@@ -143,53 +113,27 @@ function Sn = gof2SnR(data, family, parameter, NAN_ACCEPT_RATIO)
 
 u1 = data(:,1);
 u2 = data(:,2);
-theta3 = parameter;
+theta = parameter;
 
 isAtLeastOneNotNaN = false;
 while ~(isAtLeastOneNotNaN)
     
-    % \delta C / \delta u1 (u1, u2, theta3)
-    % the formulas are obtained through:
-    % 0) syms u1; syms u2; syms theta3;
-    % 1) AC = HACopula({{'20', 1.5}, 1, 2});
-    % 2) simple(diff(getcdf(AC), u1))
-    
-    switch family
-        case 'A'
-            e2 = (u2 + theta3.*u2.*(u2 - 1))./(theta3.*u2 - theta3 + u1.*(theta3 - theta3.*u2) + 1).^2;
-        case 'C'
-            e2 = 1./(u1.^(theta3 + 1).*(1./u1.^theta3 + 1./u2.^theta3 - 1).^(1./theta3 + 1));
-        case 'F'
-            e2 = (exp(theta3.*(u2 + 1)) - exp(theta3))./(exp(theta3.*(u1 + 1)) + exp(theta3.*(u2 + 1)) - exp(theta3.*(u1 + u2)) - exp(theta3));
-        case 'G'
-            e2 = (exp(-((-log(u1)).^theta3 + (-log(u2)).^theta3).^(1./theta3)).*(-log(u1)).^(theta3 - 1).*((-log(u1)).^theta3 + (-log(u2)).^theta3).^(1./theta3 - 1))./u1;
-        case 'J'
-            e2 = -((1 - u2).^theta3 - 1).*(1 - u1).^(theta3 - 1).*((1 - u1).^theta3 + (1 - u2).^theta3 - (1 - u1).^theta3.*(1 - u2).^theta3).^(1./theta3 - 1);
-        case '12'
-            e2 = ((1./u1 - 1).^(theta3 - 1).*((1./u1 - 1).^theta3 + (1./u2 - 1).^theta3).^(1./theta3 - 1))./(u1.^2.*(((1./u1 - 1).^theta3 + (1./u2 - 1).^theta3).^(1./theta3) + 1).^2);
-        case '14'
-            e2 = ((1./u1.^(1./theta3) - 1).^(theta3 - 1).*((1./u1.^(1./theta3) - 1).^theta3 + (1./u2.^(1./theta3) - 1).^theta3).^(1./theta3 - 1))./(u1.^(1./theta3 + 1).*(((1./u1.^(1./theta3) - 1).^theta3 + (1./u2.^(1./theta3) - 1).^theta3).^(1./theta3) + 1).^(theta3 + 1));
-        case '19'
-            e2 = (theta3.^2.*exp(theta3./u1))./(u1.^2.*log(exp(theta3./u1) + exp(theta3./u2) - exp(theta3)).^2.*(exp(theta3./u1) + exp(theta3./u2) - exp(theta3)));
-        case '20'
-            e2 = exp(1./u1.^theta3)./(u1.^(theta3 + 1).*log(exp(1./u1.^theta3) + exp(1./u2.^theta3) - exp(1)).^(1./theta3 + 1).*(exp(1./u1.^theta3) + exp(1./u2.^theta3) - exp(1)));
-        otherwise
-            error('gof2SnR: Unsupported family');
-    end
+  
+    e2 = ACcondcdf(family, theta, u1, u2);
     
     % provide at least one real number in e2
     if sum(~isnan(e2)) == 0
         % there is no real number in e2
 
         % decrease the parameter 
-        theta3 = theta3/10;
+        theta = theta/10;
         
         % check the range
         famRange = tau2theta(family, getfamilytaurange(family));
-        if theta3 < famRange(1)
-            error('gof2SnR: Unable to find a parameter value such that the Rosenblatt''s transformation would return at least one real value.');
+        if theta < famRange(1)
+            error('HACopula:gof2Sn', 'gof2SnR: Unable to find a parameter value such that the Rosenblatt''s transformation would return at least one real value.');
         else
-            warning(['gof2SnR: the Rosenblatt''s transformation has returned for the original parameter ' num2str(parameter) ' only NaN for all data. Trying the parameter' num2str(theta3) ' instead.']);
+            warning('HACopula:gof2Sn', ['gof2SnR: the Rosenblatt''s transformation has returned for the original parameter ' num2str(parameter) ' only NaN for all data. Trying the parameter' num2str(theta) ' instead.']);
         end
     else
         isAtLeastOneNotNaN = true;
@@ -200,7 +144,7 @@ end
 % NaN check
 [e2, nNaNs] = nanapprox(e2, data);
 if nNaNs/size(data,1) > NAN_ACCEPT_RATIO
-    warning('gof2SnR: %d NaNs detected and replaced by their approximations.\n', nNaNs);
+    warning('HACopula:NaN_detected', ['gof2SnR: ' num2str(nNaNs) ' NaNs detected and replaced by their approximations.']);
 end
 
 %Sn(C) statistics according to Genest

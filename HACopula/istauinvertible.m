@@ -4,12 +4,12 @@ function invertible = istauinvertible(family, tauMat)
 %*family*. Otherwise, returns 0.
 %
 % References:
-% [Górecki et al., 2016b] Górecki, J., Hofert, M., and Holeòa, M. (2016). On
-%     structure, family and parameter estimation of hierarchical
-%     Archimedean copulas. arXiv preprint arXiv:1611.09225.
+% [Gorecki et al., 2017] On Structure, Family and Parameter Estimation
+%     of Hierarchical Archimedean copulas. Journal of Statistical Computation 
+%     and Simulation, 87(17), 3261ÿ3324
 %
 %
-% Copyright 2017 Jan Górecki
+% Copyright 2018 Jan Gorecki
 
 invertible = zeros(size(tauMat));
 for i = 1:size(tauMat,1)
@@ -19,9 +19,11 @@ for i = 1:size(tauMat,1)
 end
 invertible = prod(reshape(invertible,[1, numel(tauMat)]));
 
+end
+
 
 function invertible = istauinvertiblescalar(family, tau)
-% returns true iif *tau* lies in the interval \tau_{(a)}(\Theta_a), see [Górecki et al., 2016b]
+% returns true iif *tau* lies in the interval \tau_{(a)}(\Theta_a), see [Gorecki et al., 2017]
 
 % \tau_{(a)}(\Theta_a)
 tauRange = getfamilytaurange(family);
@@ -30,6 +32,6 @@ tauRange = getfamilytaurange(family);
 % true iif theta lies in the interval tauTheta
 invertible = min(max(tauRange(1),tau),tauRange(2)) == tau;
         
-        
+end        
         
         

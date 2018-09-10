@@ -42,9 +42,9 @@ function [HACObject, fitLog] = HACopulafit(U, families, varargin)
 % Inputs (optional):
 % HACEstimator      - If 'HACEstimator' == 'pairwise' (or  == 0), the HAC is
 %                     estimated according to the approach represented by
-%                     Algorithms 2 and 3 in [Górecki et al., 2016b]. If
+%                     Algorithms 2 and 3 in [Gorecki et al., 2017]. If
 %                     'HACEstimator' == 'diagonal' (or  == 1), the HAC is
-%                     estimated according to the approach from [Górecki et
+%                     estimated according to the approach from [Gorecki et
 %                     al., 2016b] represented by Algorithm 4. If
 %                     'HACEstimator' is in (0, 1), both of the approaches
 %                     are used at the same time and their results are
@@ -75,7 +75,7 @@ function [HACObject, fitLog] = HACopulafit(U, families, varargin)
 %                     generator. The options are 'E' refering to S_n^{(E)},
 %                     'K' refering to S_n^{(K)} (Kendall's transform) and 'R'
 %                     refering to S_n^{(C)} (Rosenblatt's transform) from
-%                     [Górecki et al., 2016b]. Note that the chosen statistic
+%                     [Gorecki et al., 2017]. Note that the chosen statistic
 %                     is first computed for all bivariate margins and then
 %                     aggregated with g_2.
 % KendallMatrix     - The Kendall correlation matrix of U. Use (could be
@@ -121,7 +121,7 @@ function [HACObject, fitLog] = HACopulafit(U, families, varargin)
 % Reestimator       - Applies if PreCollapse == true. The possible values 
 %                     are either 'Ktauavg' or 'taumin', each corresponding to
 %                     an approach to re-estimation of HAC's parameters
-%                     after collapsing, see [Górecki et al., 2016b] for
+%                     after collapsing, see [Gorecki et al., 2017] for
 %                     details.
 % CollapsedArray    - Allows for supplying a collapsed array of '?'-homogenous
 %                     HACs to speed up the estimating process.
@@ -133,11 +133,11 @@ function [HACObject, fitLog] = HACopulafit(U, families, varargin)
 %                     is provided, the collapsed HAC will have the number
 %                     of forks equal to this integer. If set to 'unknown',
 %                     the number of forks is determined using the
-%                     function findjump, see Section 6.1 in [Górecki et al., 2016b].
+%                     function findjump, see Section 6.1 in [Gorecki et al., 2017].
 %                     
 %
 % Example with the default settings of the optional parameters (omitting
-% the ones determined for supplying some precomputed quantities):
+% the ones that serve for supplying some precomputed quantities):
 % [estimate, fitLog] = HACopulafit(U, families, ...
 %                       'HACEstimator', 'pairwise',... 
 %                       'ThetaEstimator', 'invtau', ...
@@ -157,17 +157,17 @@ function [HACObject, fitLog] = HACopulafit(U, families, varargin)
 % 
 %
 % References:
-% [Górecki et al., 2016a] Górecki, J., Hofert, M., and Holeòa, M. (2016). An 
+% [Gorecki et al., 2016a] Gorecki, J., Hofert, M., and Holena, M. (2016). An 
 %     approach to structure determination and estimation of hierarchical
 %     Archimedean copulas and its application to bayesian classication.
 %     Journal of Intelligent Information Systems, pages 21-59.
 %
-% [Górecki et al., 2016b] Górecki, J., Hofert, M., and Holeòa, M. (2016). On
-%     structure, family and parameter estimation of hierarchical
-%     Archimedean copulas. Submitted for publication.
+% [Gorecki et al., 2017] On Structure, Family and Parameter Estimation
+%     of Hierarchical Archimedean copulas. Journal of Statistical Computation 
+%     and Simulation, 87(17), 3261ÿ3324
 %
 %
-% Copyright 2017 Jan Górecki
+% Copyright 2018 Jan Gorecki
 
 % -------------------------------------------------------------------------
 
@@ -187,7 +187,7 @@ attitude = 'optimistic';
 checkData = true;
 % the following default parameters are the ones that can be somehow
 % pre-computed (to increase efficinecy of the estimation process)
-preCollapsedHAC = []; % pre-collapsed HAC is not provided
+preCollapsedHAC = []; 
 emp2copulas = {};
 collapsedArray = {};
 minDistanceArray = [];
@@ -197,7 +197,7 @@ minDistanceArray = [];
 
 narginchk(2,34);
 
-% swich on logging if the second output argument is specified
+% switch on logging if the second output argument is specified
 if nargout == 2
     logging = true;
 elseif nargout <= 1
@@ -207,7 +207,7 @@ end
 
 % check for additional parameters
 if mod(size(varargin,2),2) == 1
-    error('HACopulafit: There must be an even number of the additional paramters');
+    error('HACopula:HACopulafit:BadInputs', 'HACopulafit: There must be an even number of the additional paramters');
 end
 
 if size(varargin,2) >= 2
@@ -222,7 +222,7 @@ if size(varargin,2) >= 2
                 'GOF', 'Emp2copulas', 'Logging', 'g_1', 'g_2', 'CheckData', 'HACEstimator', ...
                 'KendallMatrix', 'Attitude', 'Reestimator', 'nForks', 'CollapsedArray', 'MinDistanceArray', 'PreCollapse', 'PreCollapsedHAC'});
         catch
-            error(['The input, ''' parNames{i} ''', did not match any of the valid parameter names '...
+            error('HACopula:HACopulafit:BadInputs', ['The input, ''' parNames{i} ''', did not match any of the valid parameter names '...
                 '(ThetaEstimator, ThetaEstimator2, GOF, Emp2copulas, g_1, g_2, CheckData'...
                 ', HACEstimator, KendallMatrix, Attitude, Reestimator, nForks, CollapsedArray, MinDistanceArray, PreCollapse, PreCollapsedHAC).']);
         end
@@ -233,12 +233,12 @@ if size(varargin,2) >= 2
     % is ThetaEstimator a parameter ?
     if size(iParameter,2) > 0 %
         if size(iParameter,2) > 1
-            error('HACopulafit: ThetaEstimator is a repeating parameter.')
+            error('HACopula:HACopulafit:BadInputs', 'HACopulafit: ThetaEstimator is a repeating parameter.')
         end
         thetaEstimatorPairwise = parValues{iParameter};
         if ~(strcmp(thetaEstimatorPairwise, 'invtau') || strcmp(thetaEstimatorPairwise, 'invtau2') || ...
                 strcmp(thetaEstimatorPairwise, 'mle') || strcmp(thetaEstimatorPairwise, 'mle2'))
-            error('HACopulafit: the value corresponding to ThetaEstimator must be ''invtau'', ''invtau2'', ''mle'' or ''mle2''.');
+            error('HACopula:HACopulafit:BadInputs', 'HACopulafit: the value corresponding to ThetaEstimator must be ''invtau'', ''invtau2'', ''mle'' or ''mle2''.');
         end
         % set the diagonal theta estimator to the same value (which can be changed by setting ThetaEstimator2)
         thetaEstimatorDiagonal = parValues{iParameter};
@@ -249,12 +249,12 @@ if size(varargin,2) >= 2
     % is ThetaEstimator2 a parameter ?
     if size(iParameter,2) > 0 %
         if size(iParameter,2) > 1
-            error('HACopulafit: ThetaEstimator2 is a repeating parameter.')
+            error('HACopula:HACopulafit:BadInputs', 'HACopulafit: ThetaEstimator2 is a repeating parameter.')
         end
         thetaEstimatorDiagonal = parValues{iParameter};
         if ~(strcmp(thetaEstimatorDiagonal, 'invtau') || strcmp(thetaEstimatorDiagonal, 'invtau2') || ...
                 strcmp(thetaEstimatorDiagonal, 'mle') || strcmp(thetaEstimatorPairwise, 'mle2'))
-            error('HACopulafit: the value corresponding to ThetaEstimator2 must be ''invtau'', ''invtau2'', ''mle'' or ''mle2''.');
+            error('HACopula:HACopulafit:BadInputs', 'HACopulafit: the value corresponding to ThetaEstimator2 must be ''invtau'', ''invtau2'', ''mle'' or ''mle2''.');
         end
     end
     
@@ -264,12 +264,12 @@ if size(varargin,2) >= 2
     % is GOF a parameter ?
     if size(iParameter,2) > 0 %
         if size(iParameter,2) > 1
-            error('HACopulafit: GOF is a repeating parameter.')
+            error('HACopula:HACopulafit:BadInputs', 'HACopulafit: GOF is a repeating parameter.')
         end
         gof = parValues{iParameter};
         if ~(strcmp(gof, 'E') || strcmp(gof, 'K') || ...
                 strcmp(gof, 'R'))
-            error('HACopulafit: the value corresponding to GOF must be ''E'', ''K'' or ''R''.');
+            error('HACopula:HACopulafit:BadInputs', 'HACopulafit: the value corresponding to GOF must be ''E'', ''K'' or ''R''.');
         end
     end
     
@@ -278,11 +278,11 @@ if size(varargin,2) >= 2
     % is Emp2copulas a parameter ?
     if size(iParameter,2) > 0 %
         if size(iParameter,2) > 1
-            error('HACopulafit: Emp2copulas is a repeating parameter.')
+            error('HACopula:HACopulafit:BadInputs', 'HACopulafit: Emp2copulas is a repeating parameter.')
         end
         emp2copulas = parValues{iParameter};
         if ~iscell(emp2copulas)
-            error('HACopulafit: the value corresponding to Emp2copulas must a cell returned by computeallemp2copulas.');
+            error('HACopula:HACopulafit:BadInputs', 'HACopulafit: the value corresponding to Emp2copulas must a cell returned by computeallemp2copulas.');
         end
     end
     
@@ -291,7 +291,7 @@ if size(varargin,2) >= 2
     % is g_1 a parameter ?
     if size(iParameter,2) > 0 %
         if size(iParameter,2) > 1
-            error('HACopulafit: g_1 is a repeating parameter.')
+            error('HACopula:HACopulafit:BadInputs', 'HACopulafit: g_1 is a repeating parameter.')
         end
         g1name = parValues{iParameter};
         % check if the parameter is max, min or average
@@ -302,7 +302,7 @@ if size(varargin,2) >= 2
         elseif strcmp(g1name,'average');
             g1 = @(t)mean(t);
         else
-            error('HACopulafit: The value of g_1 is not a supported aggregation function. Use ''max'', ''min'' or ''average''');
+            error('HACopula:HACopulafit:BadInputs', 'HACopulafit: The value of g_1 is not a supported aggregation function. Use ''max'', ''min'' or ''average''');
         end
     end
     
@@ -311,19 +311,19 @@ if size(varargin,2) >= 2
     % is g_2 a parameter ?
     if size(iParameter,2) > 0 %
         if size(iParameter,2) > 1
-            error('HACopulafit: g_2 is a repeating parameter.')
+            error('HACopula:HACopulafit:BadInputs', 'HACopulafit: g_2 is a repeating parameter.')
         end
         g2 = parValues{iParameter};
         % check if g_2 is a [0, Inf)-aggregation function for some
         % values
         if ~isnumeric(g2(0.5))
-            error('HACopulafit: g_2(0.5) is not a number.')
+            error('HACopula:HACopulafit:BadInputs', 'HACopulafit: g_2(0.5) is not a number.')
         end
         if g2([0.25 0.75]) ~= g2([0.75 0.25])
-            error('HACopulafit: g_2(0.25, 0.75) ~= g_2(0.75, 0.25), i.e., g_2 is not invariant to a permutation of arguments.')
+            error('HACopula:HACopulafit:BadInputs', 'HACopulafit: g_2(0.25, 0.75) ~= g_2(0.75, 0.25), i.e., g_2 is not invariant to a permutation of arguments.')
         end
         if g2([0.5 0.5]) ~= g2(0.5)
-            error('HACopulafit: g_2(0.5, 0.5) ~= g_2(0.5), i.e., g_2 is not a supported aggregation function.')
+            error('HACopula:HACopulafit:BadInputs', 'HACopulafit: g_2(0.5, 0.5) ~= g_2(0.5), i.e., g_2 is not a supported aggregation function.')
         end
     end
     
@@ -333,13 +333,13 @@ if size(varargin,2) >= 2
     % is CheckData a parameter ?
     if size(iParameter,2) > 0 %
         if size(iParameter,2) > 1
-            error('HACopulafit: CheckData is a repeating parameter.')
+            error('HACopula:HACopulafit:BadInputs', 'HACopulafit: CheckData is a repeating parameter.')
         end
         checkData = parValues{iParameter};
         if ~islogical(checkData) % checkData must be a logical value or
             % on or off
             if ~(strcmp(checkData, 'on') || strcmp(checkData, 'off'))
-                error('HACopulafit: the value corresponding to CheckData must be ''on'', ''off'' or a logical value.');
+                error('HACopula:HACopulafit:BadInputs', 'HACopulafit: the value corresponding to CheckData must be ''on'', ''off'' or a logical value.');
             end
             checkData = strcmp(checkData, 'on');
         end
@@ -351,13 +351,13 @@ if size(varargin,2) >= 2
     % is HACEstimator a parameter ?
     if size(iParameter,2) > 0 %
         if size(iParameter,2) > 1
-            error('HACopulafit: HACEstimator is a repeating parameter.')
+            error('HACopula:HACopulafit:BadInputs', 'HACopulafit: HACEstimator is a repeating parameter.')
         end
         hacEstimatorRatio = parValues{iParameter}; % ratio between pairwise and diagonal HAC estimator
         if ~isnumeric(hacEstimatorRatio)
             % could be 'pairwise' or 'diagonal'
             if ~(strcmp(hacEstimatorRatio, 'pairwise') || strcmp(hacEstimatorRatio, 'diagonal'))
-                error('HACopulafit: the string value corresponding to HACEstimator must be ''pairwise'' or ''diagonal''.');
+                error('HACopula:HACopulafit:BadInputs', 'HACopulafit: the string value corresponding to HACEstimator must be ''pairwise'' or ''diagonal''.');
             end
             if strcmp(hacEstimatorRatio, 'pairwise')
                 hacEstimatorRatio = 0;
@@ -366,7 +366,7 @@ if size(varargin,2) >= 2
             end
         else % HACEstimator is numeric
             if (hacEstimatorRatio < 0) || (hacEstimatorRatio > 1)
-                error('HACopulafit: the numeric value corresponding to HACEstimator must from the interval [0, 1].');
+                error('HACopula:HACopulafit:BadInputs', 'HACopulafit: the numeric value corresponding to HACEstimator must from the interval [0, 1].');
             end
         end
     end
@@ -376,7 +376,7 @@ if size(varargin,2) >= 2
     % is KendallMatrix a parameter ?
     if size(iParameter,2) > 0 %
         if size(iParameter,2) > 1
-            error('HACopulafit: KendallMatrix is a repeating parameter.')
+            error('HACopula:HACopulafit:BadInputs', 'HACopulafit: KendallMatrix is a repeating parameter.')
         end
         precomputedKendallMatrix = parValues{iParameter};
     end
@@ -386,11 +386,11 @@ if size(varargin,2) >= 2
     % is Attitude a parameter ?
     if size(iParameter,2) > 0 %
         if size(iParameter,2) > 1
-            error('HACopulafit: Attitude is a repeating parameter.')
+            error('HACopula:HACopulafit:BadInputs', 'HACopulafit: Attitude is a repeating parameter.')
         end
         attitude = parValues{iParameter};
         if ~(strcmp(attitude, 'pessimistic') || strcmp(attitude, 'optimistic'))
-            error('HACopulafit: the value corresponding to Attitude must be ''pessimistic'' or ''optimistic''.');
+            error('HACopula:HACopulafit:BadInputs', 'HACopulafit: the value corresponding to Attitude must be ''pessimistic'' or ''optimistic''.');
         end
     end
     
@@ -399,11 +399,11 @@ if size(varargin,2) >= 2
     % is Reestimator a parameter ?
     if size(iParameter,2) > 0 %
         if size(iParameter,2) > 1
-            error('HACopulafit: Reestimator is a repeating parameter.')
+            error('HACopula:HACopulafit:BadInputs', 'HACopulafit: Reestimator is a repeating parameter.')
         end
         reEstimType = parValues{iParameter};
         if ~(strcmp(reEstimType, 'Ktauavg') || strcmp(reEstimType, 'taumin'))
-            error('HACopulafit: the value corresponding to Attitude must be ''Ktauavg'' or ''taumin''.');
+            error('HACopula:HACopulafit:BadInputs', 'HACopulafit: the value corresponding to Attitude must be ''Ktauavg'' or ''taumin''.');
         end
     end
     
@@ -412,11 +412,11 @@ if size(varargin,2) >= 2
     % is Reestimator a parameter ?
     if size(iParameter,2) > 0 %
         if size(iParameter,2) > 1
-            error('HACopulafit: nForks is a repeating parameter.')
+            error('HACopula:HACopulafit:BadInputs', 'HACopulafit: nForks is a repeating parameter.')
         end
         nForks = parValues{iParameter};
         if (isnumeric(nForks) && floor(nForks) ~= nForks) || (~isnumeric(nForks) && ~strcmp(nForks, 'unknown'))
-            error('HACopulafit: the value corresponding to nForks must be an integer or ''unknown''.');
+            error('HACopula:HACopulafit:BadInputs', 'HACopulafit: the value corresponding to nForks must be an integer or ''unknown''.');
         end
     end
     
@@ -425,11 +425,11 @@ if size(varargin,2) >= 2
     % is CollapsedArray a parameter ?
     if size(iParameter,2) > 0 %
         if size(iParameter,2) > 1
-            error('HACopulafit: CollapsedArray is a repeating parameter.')
+            error('HACopula:HACopulafit:BadInputs', 'HACopulafit: CollapsedArray is a repeating parameter.')
         end
         collapsedArray = parValues{iParameter};
         if ~isa(collapsedArray{1},'HACopula')
-            error('HACopulafit: the value corresponding to CollapsedArray must be a cell array of HACopula objects.');
+            error('HACopula:HACopulafit:BadInputs', 'HACopulafit: the value corresponding to CollapsedArray must be a cell array of HACopula objects.');
         end
     end
     
@@ -438,14 +438,14 @@ if size(varargin,2) >= 2
     % is MinDistanceArray a parameter ?
     if size(iParameter,2) > 0 %
         if size(iParameter,2) > 1
-            error('HACopulafit: MinDistanceArray is a repeating parameter.')
+            error('HACopula:HACopulafit:BadInputs', 'HACopulafit: MinDistanceArray is a repeating parameter.')
         end
         minDistanceArray = parValues{iParameter};
         if ~isnumeric(minDistanceArray)
-            error('HACopulafit: the value corresponding to MinDistanceArray must be a numeric array.');
+            error('HACopula:HACopulafit:BadInputs', 'HACopulafit: the value corresponding to MinDistanceArray must be a numeric array.');
         else
             if ~isnumeric(nForks) && strcmp(nForks, 'unknown') && size(minDistanceArray,2)~=length(collapsedArray)
-                error('HACopulafit: MinDistanceArray must be of the same size as the CollapsedArray.');
+                error('HACopula:HACopulafit:BadInputs', 'HACopulafit: MinDistanceArray must be of the same size as the CollapsedArray.');
             end
         end
     end
@@ -455,11 +455,11 @@ if size(varargin,2) >= 2
     % is PreCollapse a parameter ?
     if size(iParameter,2) > 0 %
         if size(iParameter,2) > 1
-            error('HACopulafit: PreCollapse is a repeating parameter.')
+            error('HACopula:HACopulafit:BadInputs', 'HACopulafit: PreCollapse is a repeating parameter.')
         end
         preCollapse = parValues{iParameter};
         if ~islogical(preCollapse)
-            error('HACopulafit: the value corresponding to PreCollapse must be a logical value (true or false).');
+            error('HACopula:HACopulafit:BadInputs', 'HACopulafit: the value corresponding to PreCollapse must be a logical value (true or false).');
         end
     end
     
@@ -468,11 +468,11 @@ if size(varargin,2) >= 2
     % is PreCollapsedHAC a parameter ?
     if size(iParameter,2) > 0 %
         if size(iParameter,2) > 1
-            error('HACopulafit: PreCollapsedHAC is a repeating parameter.')
+            error('HACopula:HACopulafit:BadInputs', 'HACopulafit: PreCollapsedHAC is a repeating parameter.')
         end
         preCollapsedHAC = parValues{iParameter};
         if ~isa(preCollapsedHAC, 'HACopula')
-            error('HACopulafit: the value corresponding to PreCollapsedHAC must be an instance of the HACopula class.');
+            error('HACopula:HACopulafit:BadInputs', 'HACopulafit: the value corresponding to PreCollapsedHAC must be an instance of the HACopula class.');
         end
     end
     
@@ -483,16 +483,16 @@ end % more than two input parameters
 ALL_FAMILIES = {'A', 'C', 'F', 'G', 'J', '12', '14', '19', '20', '?'}; % supported families
 for i = 1:length(families)
     if sum(strcmp(families{i}, ALL_FAMILIES)) == 0
-        error(['HACopulafit: The provided family ''' families{i} ''' is not supported. Choose families from {' strjoin(ALL_FAMILIES, ', ') '}.']);
+        error('HACopula:HACopulafit:BadInputs', ['HACopulafit: The provided family ''' families{i} ''' is not supported. Choose families from {' strjoin(ALL_FAMILIES, ', ') '}.']);
     end
 end
 if sum(strcmp('?', families)) >= 1 && length(families) > 1
-    error('HACopulafit: The arbitrary family ''?'' cannot be combined with other families.');
+    error('HACopula:HACopulafit:BadInputs', 'HACopulafit: The arbitrary family ''?'' cannot be combined with other families.');
 end
 
 % pre-collapsing check
 if preCollapse && hacEstimatorRatio > 0
-    error(['HACopulafit: Using the diagonal estimation (i.e., ''HACEstimator'' == ''diagonal'' or ''HACEstimator'' > 0),' ... 
+    error('HACopula:HACopulafit:BadInputs', ['HACopulafit: Using the diagonal estimation (i.e., ''HACEstimator'' == ''diagonal'' or ''HACEstimator'' > 0),' ... 
         ' pre-collapsing cannot be performed as pre-collapsing requires no assumptions on the underlying families (on contrary to the diagonal estimation).' ...
         ' Either set the parameter ''PreCollapse'' to false, or ''HACEstimator'' to 0 (''pairwise'').']);
 end
@@ -500,7 +500,7 @@ end
 
 % perform basic data checks
 if checkData && ~iscopuladata(U)
-    warning('HACopulafit: at least one column of U was rejected to be standard uniform according to KS test at the 5% significance level, i.e., U might not be a sample from a copula.');
+    warning('HACopula:notCopulaData', 'HACopulafit: at least one column of U was rejected to be standard uniform according to KS test at the 5%% significance level, i.e., U might not be a sample from a copula.');
 end
 
     
@@ -535,7 +535,7 @@ if exist('precomputedKendallMatrix', 'var')  % NOTE: the term eps(1) appears two
     if ~(ismatrix(precomputedKendallMatrix) && size(precomputedKendallMatrix, 1) == d && ...
         size(precomputedKendallMatrix, 2) == d && sum(diag(precomputedKendallMatrix) - 1) <= d*eps(1) && ...
         sum(sum( (precomputedKendallMatrix >= -1) .* (precomputedKendallMatrix <= (1+eps(1))  ) )) == d^2 )
-            error('HACopulafit: the value corresponding to KendallMatrix is not a Kendall correlation matrix.');
+            error('HACopula:HACopulafit:BadInputs', 'HACopulafit: the value corresponding to KendallMatrix is not a Kendall correlation matrix.');
     end
     K = precomputedKendallMatrix;
 else
@@ -552,7 +552,7 @@ if checkData
    if sum(sum(negK)) > 0
        avgNegK = sum(sum(K(negK)))/sum(sum(negK));  % compute the average of the negative coefficients
        if avgNegK < MIN_AVERAGE_TAU
-           warning(['HACopulafit: The average of the negative coefficient in the Kendall''s matrix is lower that ' ...
+           warning('HACopula:HACopulafit', ['HACopulafit: The average of the negative coefficient in the Kendall''s matrix is lower that ' ...
                num2str(MIN_AVERAGE_TAU) ' . Recall that HACs are not able to model negative pairwise correlation.' ...
                ' Try to flip (X := - X, using the function findvars2flip) some of the variables in order to reduce the negative pairwise correlation and possibly better fit of the estimate.']);
        end
@@ -609,7 +609,7 @@ else
             if nForks <= d-1 && nForks >= 1
                 colEstimate = colEstArray{min(d-nForks, length(colEstArray))}; % the min is used due to the possible case that considerFamilies = true in the collapse function
             else
-                error('HACopulafit: the parameter nForks must be from {1, ..., d-1}');
+                error('HACopula:HACopulafit:BadInputs', 'HACopulafit: the parameter nForks must be from {1, ..., d-1}');
             end
             if logging
                 fitLog = [fitLog 'Taking the collapsed structure with ' num2str(nForks) ' forks, ' char(10) ...
@@ -862,7 +862,7 @@ for k = 1:forksToEst
     end
     
     if nDisqualified == length(N)
-        warning('HACopulafit: all families disqualified from the estimation process. Returning no HAC (i.e., the empty matrix []). Use another (wider set of) families for the data.');
+        warning('HACopula:HACopulafit', 'HACopulafit: all families disqualified from the estimation process. Returning no HAC (i.e., the empty matrix []). Use another (wider set of) families for the data.');
         if logging
             fitLog = [fitLog char(10) '***** HACopulafit: Stop. *****' char(10) ...
                 'All families have been disqualified from the estimation process.' char(10)...  '
@@ -915,7 +915,7 @@ for k = 1:forksToEst
         % NaN check
         [U(:,d+k), nNaNs] = nanapprox(U(:,d+k), U(:,i));
         if nNaNs > 0
-            warning(['HACopulafit: ' num2str(nNaNs) ' NaNs detected in the diagonal transformation and replaced by their approximations.']);
+            warning('HACopula:NaN_detected', ['HACopulafit: ' num2str(nNaNs) ' NaNs detected in the diagonal transformation and replaced by their approximations.']);
         end
         % extend K with taus for the new vector U_{d+k}
         for ii = 1:d-k-1  % length(I) without the last one
@@ -933,7 +933,7 @@ if logging
     fitLog = [fitLog char(10) '--------------------------------------------------------------------' char(10) '***** HACopulafit: Stop. *****'];
 end
 
-
+end
 
 
 

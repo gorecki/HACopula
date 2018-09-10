@@ -17,7 +17,7 @@ function theta = fitparameter(descLeaves, family, hacEstimatorRatio, thetaEstima
 % thetaEstimatorDiagonal- An estimator for the parameter of ACs (see below for details).
 % K                     - The matrix of Kendall's tau coefficients for U.
 % U                     - Pseudo-observations.
-% g1                    - An [0, 1] aggregation function (g in Algorithm 3 from [Górecki et al., 2016a]).
+% g1                    - An [0, 1] aggregation function (g in Algorithm 3 from [Gorecki et al., 2016a]).
 % iK, jK                - The indices of the columns in U from which the parameter
 %                         will be estimated (related to the diagonal HAC
 %                         estimation).
@@ -60,20 +60,20 @@ function theta = fitparameter(descLeaves, family, hacEstimatorRatio, thetaEstima
 % hacEstimatorRatio) average of the pairwise and diagonal estimates.
 %
 % References:
-% [Górecki et al., 2014] Górecki, J., Hofert, M., and Holeòa, M. (2014). On
+% [Gorecki et al., 2014] Gorecki, J., Hofert, M., and Holena, M. (2014). On
 %     the consistency of an estimator for hierarchical Archimedean copulas.
 %     In 32nd International Conference on Mathematical Methods in
 %     Economics, pages 239-244.
-% [Górecki et al., 2016a] Górecki, J., Hofert, M., and Holeòa, M. (2016). An 
+% [Gorecki et al., 2016a] Gorecki, J., Hofert, M., and Holena, M. (2016). An 
 %     approach to structure determination and estimation of hierarchical
 %     Archimedean copulas and its application to bayesian classication.
 %     Journal of Intelligent Information Systems, pages 21-59.
-% [Górecki et al., 2016b] Górecki, J., Hofert, M., and Holeòa, M. (2016). On
-%     structure, family and parameter estimation of hierarchical
-%     Archimedean copulas. Submitted for publication.
+% [Gorecki et al., 2017] On Structure, Family and Parameter Estimation
+%     of Hierarchical Archimedean copulas. Journal of Statistical Computation 
+%     and Simulation, 87(17), 3261ÿ3324
 %
 %
-% Copyright 2017 Jan Górecki
+% Copyright 2018 Jan Gorecki
 
 %--------------------------------------------------------------------------
 
@@ -172,7 +172,7 @@ if hacEstimatorRatio < 1 % pairwise or combined
             end
             thetaActPairwise = mlefor2AC(biU, family, maxSimilarity, r(1), r(2));
             if ~((thetaActPairwise > -Inf) && (thetaActPairwise < Inf))
-                error('fitparameter: MLE has returned a NaN.');
+                error('HACopula:NaN_detected', 'fitparameter: MLE has returned a NaN.');
             end
             
         case 'mle2'
@@ -185,7 +185,7 @@ if hacEstimatorRatio < 1 % pairwise or combined
                         for jj = 1:length(descLeaves{j})
                             mlePair(ii, jj) = mlefor2AC(U(:,[descLeaves{i}(ii) descLeaves{j}(jj)]), family, maxSimilarity, r(1), r(2));
                             if ~((mlePair(ii, jj) > -Inf) && (mlePair(ii, jj) < Inf))
-                                error('fitparameter: MLE has returned a NaN.');
+                                error('HACopula:NaN_detected', 'fitparameter: MLE has returned a NaN.');
                             end
                         end
                     end
@@ -198,7 +198,7 @@ if hacEstimatorRatio < 1 % pairwise or combined
             thetaActPairwise = g1(vecMlePair);
             
         otherwise
-            error('fitparameter: Unsupported pairwise estimator. Should be ''invtau'', ''invtau2'', ''mle'' or ''mle2''.')
+            error('HACopula:BadInputs', 'fitparameter: Unsupported pairwise estimator. Should be ''invtau'', ''invtau2'', ''mle'' or ''mle2''.')
     end
 end
 
@@ -233,10 +233,10 @@ if hacEstimatorRatio > 0 % diagonal or combined
         case {'mle', 'mle2'}
             thetaActDiagonal = mlefor2AC(U(:,[iK jK]), family, maxSimilarity, r(1), r(2)); 
             if ~((thetaActDiagonal > -Inf) && (thetaActDiagonal < Inf))
-                error('fitparameter: MLE has returned a NaN.');
+                error('HACopula:NaN_detected', 'fitparameter: MLE has returned a NaN.');
             end
         otherwise
-            error('fitparameter: Unsupported diagonal estimator. Should be ''invtau'', ''invtau2'', ''mle'' or ''mle2''.')
+            error('HACopula:BadInputs', 'fitparameter: Unsupported diagonal estimator. Should be ''invtau'', ''invtau2'', ''mle'' or ''mle2''.')
 
     end
 end

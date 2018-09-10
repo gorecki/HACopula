@@ -22,7 +22,7 @@ function thetaMatrix = tau2theta(family, tauMatrix)
 %     Hochschulschriften.
 %
 %
-% Copyright 2017 Jan Górecki
+% Copyright 2018 Jan Gorecki
 
 thetaMatrix = zeros(size(tauMatrix));
 
@@ -130,7 +130,7 @@ switch  family
     case '?'  
         theta = tau;
     otherwise
-        error('tau2theta: computekendalltauinv: unknown family');
+        error('HACopula:BadInputs', 'tau2theta: computekendalltauinv: unknown family');
 end
 out = theta;
 end

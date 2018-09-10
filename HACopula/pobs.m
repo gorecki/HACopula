@@ -12,23 +12,23 @@ function U = pobs(X, method)
 %             d-times. This method is useful in a case when one wants to
 %             trasform from the pseudo-observations (U) back to the original
 %             observations (X), e.g., in Bayesian classfication, see
-%             [Górecki et al., 2016a].
+%             [Gorecki et al., 2016a].
 %             
 %
 % [Genest and Favre, 2007] Genest, C. and Favre, A. (2007). Everything you always
 %     wanted to know about copula modeling but were afraid to ask. Hydrol. Eng.,
 %     12:347-368.
-% [Górecki et al., 2016a] Górecki, J., Hofert, M., and Holeòa, M. (2016). An 
+% [Gorecki et al., 2016a] Gorecki, J., Hofert, M., and Holena, M. (2016). An 
 %     approach to structure determination and estimation of hierarchical
 %     Archimedean copulas and its application to bayesian classication.
 %     Journal of Intelligent Information Systems, pages 21-59.
 %
-% Copyright 2017 Jan Górecki
+% Copyright 2018 Jan Gorecki
 
 if nargin == 1
     method = 'rank';
 elseif nargin ~= 2
-    error('pobs: Invalid number of input arguments.');
+    error('HACopula:BadInputs', 'pobs: Invalid number of input arguments.');
 end
 
 [n, d] = size(X);
@@ -41,7 +41,7 @@ for i=1:d
         case 'kernel'
             U(:,i) = ksdensity(X(:,i), X(:,i), 'function', 'cdf');
         otherwise
-            error(['pobs: ' method ' is unknown method. Choose one from {''rank'', ''kernel''}']);
+            error('HACopula:BadInputs', ['pobs: ' method ' is unknown method. Choose one from {''rank'', ''kernel''}']);
     end
 end
 

@@ -11,15 +11,15 @@ function tauMatrix = theta2tau(family, thetaMatrix)
 % for details).
 %
 % References:
-% [Górecki et al., 2016b] Górecki, J., Hofert, M., and Holeòa, M. (2016). On
-%     structure, family and parameter estimation of hierarchical
-%     Archimedean copulas. arXiv preprint arXiv:1611.09225.
+% [Gorecki et al., 2017] On Structure, Family and Parameter Estimation
+%     of Hierarchical Archimedean copulas. Journal of Statistical Computation 
+%     and Simulation, 87(17), 3261ÿ3324
 % [Hofert, 2010] Hofert, M. (2010). Sampling Nested Archimedean Copulas
 %     with Applications to CDO Pricing. Suedwestdeutscher Verlag fuer
 %     Hochschulschriften.
 %
 %
-% Copyright 2017 Jan Górecki and Martin Holeòa
+% Copyright 2018 Jan Gorecki and Martin Holena
 
 tauMatrix = zeros(size(thetaMatrix));
 
@@ -48,11 +48,12 @@ switch family
     case 'C'
         out = theta/(theta+2);
     case 'F'
-        if theta >= 1e-4
+        DebyeIntegrand = @(t) t./expm1(t);
+       if theta >= 1e-8
             if isoctave
-                out = 1 - 4*(1-quad(@integrandFrank, 0, theta)/theta)/theta;
+                out = 1 - 4*(1-quad(DebyeIntegrand, 0, theta)/theta)/theta;
             else %MATLAB
-                out = 1 - 4*(1-integral(@integrandFrank, 0, theta)/theta)/theta;
+                out = 1 - 4*(1-integral(DebyeIntegrand, 0, theta)/theta)/theta;
             end
         else
             out = theta*computeKendallTau(1e-4,'F')/1e-4;
@@ -94,7 +95,7 @@ switch family
             out = (theta2tau('19', LOWER_BOUND_19) - 1/3) * theta / LOWER_BOUND_19 + 1/3;
         end
     case '20'
-        % introduced in [Górecki et al., 2016b]
+        % introduced in [Gorecki et al., 2017]
         LOWER_BOUND_20 = 1.0e-8; % numerically unstable below this bound
         if theta >= LOWER_BOUND_20
             % standard computation
@@ -111,12 +112,7 @@ switch family
     case '?'  
         out = theta; % an arbitrary identity tau=theta for the ? family
     otherwise
-        error('theta2tau: computeKendallTau: unknown family');
+        error('HACopula:BadInputs', 'theta2tau: computeKendallTau: unknown family');
 end
 end
 
-function output = integrandFrank(input)
-
-output(exp(input)>1) = input(exp(input)>1)./(exp(input(exp(input)>1))-1);
-
-end
