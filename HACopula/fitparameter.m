@@ -70,7 +70,7 @@ function theta = fitparameter(descLeaves, family, hacEstimatorRatio, thetaEstima
 %     Journal of Intelligent Information Systems, pages 21-59.
 % [Gorecki et al., 2017] On Structure, Family and Parameter Estimation
 %     of Hierarchical Archimedean copulas. Journal of Statistical Computation 
-%     and Simulation, 87(17), 3261ÿ3324
+%     and Simulation, 87(17), 3261-3324
 %
 %
 % Copyright 2018 Jan Gorecki
