@@ -6,9 +6,9 @@ function out = logrnd(alpha, n)
 % the algorithm "LK" from Kemp (1981).
 %
 % Reference:
-% Kemp, A. W. (1981), ÿEfficient Generation of Logarithmically Distributed Pseudo-Random
-% Variablesÿ, Journal of the Royal Statistical Society: Series C (Applied Statistics), 30(3),
-% 249ÿ253.
+% Kemp, A. W. (1981), "Efficient Generation of Logarithmically Distributed Pseudo-Random
+% Variables", Journal of the Royal Statistical Society: Series C (Applied Statistics), 30(3),
+% 249Ã¿253.
 %
 %
 % Copyright 2018 Jan Gorecki
