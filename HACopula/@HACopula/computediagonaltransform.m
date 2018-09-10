@@ -1,13 +1,13 @@
 function UTrans = computediagonaltransform(obj, U)
 %COMPUTEDIAGONALTRANSFORM - transformes U(:, obj.Leaves) according to obj
 % into a single vector of observations through the diagonal
-% transformation (see [Górecki et al., 2014]).
+% transformation (see [Gorecki et al., 2014]).
 %
 % TODO: use this method in collapse for MLE in the diagonal
 % estimation
 %
 %
-% Copyright 2017 Jan Górecki
+% Copyright 2018 Jan Gorecki
 
 % prepare necessary functions
 psi = getgenerator(obj.Family, obj.Parameter, 0);
@@ -33,6 +33,6 @@ UTrans = delta(max(UChild,[], 2));
 % do a NaN check
 [UTrans, nNaNs] = nanapprox(UTrans, UChild);
 if nNaNs > 0
-    warning(['HACopula::computediagonaltransform: ' num2str(nNaNs) ' NaNs detected in the diagonal transformation and replaced by their approximations.']);
+    warning('HACopula:NaN_detected', ['HACopula::computediagonaltransform:: There was ' num2str(nNaNs) ' NaNs detected in the diagonal transformation and replaced by their approximations.']);
 end
 end
