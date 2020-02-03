@@ -21,11 +21,20 @@ function tauMatrix = theta2tau(family, thetaMatrix)
 %
 % Copyright 2018 Jan Gorecki and Martin Holena
 
-tauMatrix = zeros(size(thetaMatrix));
+if strncmp(family, 'op', 2) % check if it is an outer power family (beginning with 'op')
+    if sum(size(thetaMatrix) == [1 2]) == 2
+        tauOp = theta2tau(family(3), thetaMatrix{1});
+        tauMatrix = 1 - (1 - tauOp)/thetaMatrix{2};
+    else
+        error(['theta2tau: Matrix-wise computation of tau is not supported for an outer power family, e.g, ''' family '''.']);
+    end
+else
+    tauMatrix = zeros(size(thetaMatrix));
 
-for i = 1:size(thetaMatrix,1)
-    for j = 1:size(thetaMatrix,2)
-        tauMatrix(i,j) = computeKendallTau(thetaMatrix(i,j), family);
+    for i = 1:size(thetaMatrix,1)
+        for j = 1:size(thetaMatrix,2)
+            tauMatrix(i,j) = computeKendallTau(thetaMatrix(i,j), family);
+        end
     end
 end
 
@@ -115,4 +124,3 @@ switch family
         error('HACopula:BadInputs', 'theta2tau: computeKendallTau: unknown family');
 end
 end
-
